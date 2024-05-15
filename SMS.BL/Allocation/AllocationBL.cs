@@ -1,0 +1,334 @@
+﻿using SMS.BL.Student;
+using SMS.Data;
+using SMS.Models.Allocation;
+using SMS.Models.Student;
+using SMS.Models.Subject;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SMS.BL.Allocation
+{
+    public class AllocationBL : SMS_DBEntities
+    {
+        //*******************************************For Subject Allocation***************************************************************
+
+        /// <summary>
+        /// get all subject allocation details
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<object> GetAllSubjectAllocation()
+        {
+            
+
+            var allSubjectAllocations = Teacher_Subject_Allocation.Include("Subject").Include("Teacher").ToList();
+
+           
+
+            if (allSubjectAllocations.Count > 0)
+            {
+                var data = allSubjectAllocations.Select(item => new
+                {
+                    SubjectAllocationID = item.SubjectAllocationID,
+                    SubjectCode = item.Subject.SubjectCode,
+                    SubjectName = item.Subject.Name,
+                    TeacherRegNo = item.Teacher.TeacherRegNo,
+                    TeacherName = item.Teacher.DisplayName
+                });
+
+                return data;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public SubjectAllocationBO GetSubjetAllocationByID(long id)
+        {
+            var subjectAllocation = Teacher_Subject_Allocation.Select(s => new SubjectAllocationBO()
+            {
+                SubjectAllocationID = s.SubjectAllocationID,
+                SubjectID = s.SubjectID,
+                TeacherID = s.TeacherID,
+            }).Where(s => s.SubjectAllocationID == id).FirstOrDefault();
+            return subjectAllocation;
+        }
+
+
+        /// <summary>
+        /// Check this subject allocation allocated for any student
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool CheckSubjectAllocationInUse(long id)
+        {
+            bool subjectAllocationInUse = Student_Subject_Teacher_Allocation.Any(a => a.SubjectAllocationID == id);
+            return subjectAllocationInUse;
+
+        }
+
+        /// <summary>
+        /// Delete A Subhect allocation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool DeleteSubjectAllocation(long id, out string msg)
+        {
+
+            msg = "";
+            var subjectAllocation = Teacher_Subject_Allocation.SingleOrDefault(s => s.SubjectAllocationID == id);
+            
+
+            try
+            {
+
+                if (subjectAllocation != null)
+                {
+                    if (CheckSubjectAllocationInUse(id))
+                    {
+                        msg = "This subject allocation is allocated for student.";
+                        return false;
+                    }
+                    Teacher_Subject_Allocation.Remove(subjectAllocation);
+                    SaveChanges();
+                    return true;
+
+
+                }
+                msg = "Already removed";
+                return false;
+
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                return false;
+            }
+
+        }
+
+        /// <summary>
+        /// Check one teacher already allocated for same subject
+        /// </summary>
+        /// <param name="subjectAllocation"></param>
+        /// <returns></returns>
+        public bool CheckDuplicateSubjectAllocation(SubjectAllocationBO subjectAllocation)
+        {
+            bool isDuplicateAllocation = Teacher_Subject_Allocation.Any(s => s.TeacherID == subjectAllocation.TeacherID && s.SubjectID == subjectAllocation.SubjectID);
+            return isDuplicateAllocation;
+        }
+
+        /// <summary>
+        /// Create or edit a allocation
+        /// </summary>
+        /// <param name="subjectAllocation"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool SaveSubjectAllocation(SubjectAllocationBO subjectAllocation, out string msg)
+        {
+            msg = "";
+
+            bool exitingSubjectAllocation = Teacher_Subject_Allocation.Any(s => s.SubjectAllocationID == subjectAllocation.SubjectAllocationID);
+            bool SubjectAllocationInUse = CheckSubjectAllocationInUse(subjectAllocation.SubjectAllocationID);
+           
+            try
+            {
+                if (CheckDuplicateSubjectAllocation(subjectAllocation))
+                {
+                    msg = "This Allocation already exist!";
+                    return false;
+                }
+                if (exitingSubjectAllocation)
+                {
+                    
+                    if (SubjectAllocationInUse)
+                    {
+                        msg = "The Subject allocation is Followed by a sudent";
+                        return false;
+                    }
+                    var editSubjectAllocation = Teacher_Subject_Allocation.SingleOrDefault(s => s.SubjectAllocationID == subjectAllocation.SubjectAllocationID);
+                    
+                    if (editSubjectAllocation == null)
+                    {
+                        msg = "Unable to find the subject allocation for edit";
+                        return false;
+                    }
+
+                    editSubjectAllocation.SubjectID = subjectAllocation.SubjectID;
+                    SaveChanges();
+                    msg = "Subject Allocation Updated Successfully!";
+                    return true;
+
+                }
+                
+
+                var newSubjectAllocation = new Teacher_Subject_Allocation();
+                newSubjectAllocation.TeacherID = subjectAllocation.TeacherID; 
+                newSubjectAllocation.SubjectID = subjectAllocation.SubjectID;
+                
+                Teacher_Subject_Allocation.Add(newSubjectAllocation);
+                SaveChanges();
+                msg = "Subject allocation Added Successfully!";
+                return true;
+            }
+            catch (Exception error)
+            {
+                msg = error.Message;
+                return false;
+            }
+
+        }
+
+
+
+        //******************************************************For Student Allocation********************************************************
+
+
+        /// <summary>
+        /// To get all the students allocation details
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<object> GetAllStudentAllocation()
+        {
+            var allStudentAllocations = Student_Subject_Teacher_Allocation
+                          .Include("Teacher_Subject_Allocation.Subject")
+                          .Include("Teacher_Subject_Allocation.Teacher")
+                          .Include("Student").ToList();
+                         
+
+            if (allStudentAllocations.Count > 0)
+            {
+                var data = allStudentAllocations.Select(item => new
+                {
+                    studentAllocationID = item.StudentAllocationID,
+                    StudentID = item.StudentID,
+                    StudentName = item.Student.DisplayName,
+                    studentRegNo = item.Student.StudentRegNo,
+                    SubjectID = item.Teacher_Subject_Allocation.SubjectID,
+                    subjectCode = item.Teacher_Subject_Allocation.Subject.SubjectCode,
+                    SubjectName = item.Teacher_Subject_Allocation.Subject.Name,
+                    TeacherID = item.Teacher_Subject_Allocation.TeacherID,
+                    teacherRegNo = item.Teacher_Subject_Allocation.Teacher.TeacherRegNo,
+                    TeacherName = item.Teacher_Subject_Allocation.Teacher.DisplayName
+                }); 
+
+                return data;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// Get one student allocation by it's id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public StudentAllocationBO GetStudentAllocationByID(long id)
+        {
+            var studentAllocation = Student_Subject_Teacher_Allocation.Select(s => new StudentAllocationBO()
+            {
+                StudentAllocationID = s.StudentAllocationID,
+                SubjectAllocationID = s.SubjectAllocationID,
+                StudentID = s.StudentID,
+            }).Where(s => s.StudentAllocationID == id).FirstOrDefault();
+            return studentAllocation;
+        }
+
+
+        /// <summary>
+        /// Delete one student allocation by it's id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool DeleteStudentAllocation(long id, out string msg)
+        {
+
+            msg = "";
+            var studentAllocation = Student_Subject_Teacher_Allocation.SingleOrDefault(s => s.StudentAllocationID == id);
+
+
+            try
+            {
+
+                if (studentAllocation != null)
+                {
+                    Student_Subject_Teacher_Allocation.Remove(studentAllocation);
+                    SaveChanges();
+                    return true;
+
+                }
+                msg = "Already removed";
+                return false;
+
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                return false;
+            }
+
+        }
+
+        public bool CheckDuplicateStudentAllocation(StudentAllocationBO studentAllocation)
+        {
+            bool isDuplicateAllocation = Student_Subject_Teacher_Allocation.Any(s => s.SubjectAllocationID == studentAllocation.SubjectAllocationID && s.StudentID == studentAllocation.StudentID);
+            return isDuplicateAllocation;
+        }
+
+        public bool SaveStudentAllocation(StudentAllocationBO studentAllocation, out string msg)
+        {
+            msg = "";
+
+            bool exitingStudentAllocation = Student_Subject_Teacher_Allocation.Any(s => s.StudentAllocationID == studentAllocation.StudentAllocationID);
+            
+
+            try
+            {
+                if (CheckDuplicateStudentAllocation(studentAllocation))
+                {
+                    msg = "This Allocation already exist!";
+                    return false;
+                }
+                if (exitingStudentAllocation)
+                {
+                  var editStudentAllocation = Student_Subject_Teacher_Allocation.SingleOrDefault(s => s.StudentAllocationID == studentAllocation.StudentAllocationID);
+
+                    if (editStudentAllocation == null)
+                    {
+                        msg = "Unable to find the student allocation for edit";
+                        return false;
+                    }
+
+                    editStudentAllocation.StudentAllocationID = studentAllocation.StudentAllocationID;
+                    SaveChanges();
+                    msg = "Student Allocation Updated Successfully!";
+                    return true;
+
+                }
+                
+                var newStudentAllocation = new Student_Subject_Teacher_Allocation();
+                newStudentAllocation.SubjectAllocationID = studentAllocation.SubjectAllocationID;
+                newStudentAllocation.StudentID = studentAllocation.StudentID;
+
+                Student_Subject_Teacher_Allocation.Add(newStudentAllocation);
+                SaveChanges();
+                msg = "Student allocation Added Successfully!";
+                return true;
+            }
+            catch (Exception error)
+            {
+                msg = error.Message;
+                return false;
+            }
+
+        }
+
+
+    }
+}
