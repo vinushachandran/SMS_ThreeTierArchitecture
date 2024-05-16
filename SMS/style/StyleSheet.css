@@ -29,6 +29,18 @@ footer {
     font-size: 20px;
 }
 
+.comHeader .container .nav_div ul li .nav-link {
+    color: white;
+    padding-left:30px;
+}
+
+    .comHeader .container .nav_div ul li .nav-link:hover {
+        color: #E6E6FA;
+        transform: scale(1.1);
+        cursor: pointer;
+    }
+
+
 
 
 ul.nav.nav-tabs {
@@ -91,4 +103,33 @@ ul.nav.nav-tabs {
 
 #addNew {
     background-color: #9F2B68;
+}
+
+#first-tab, #second-tab {
+    color: black;
+    
+    box-shadow: 0 0 4px #9F2B68;
+}
+
+#first-tab.active, #second-tab.active {
+    background-color: #E6E6FA;
+
+}
+
+.full-body {
+    /*border: solid 0.3px black;*/
+    padding: 30px;
+    margin-top: 0;
+    margin: 30px;
+    box-shadow: 0 0 4px #9F2B68;
+    border-radius:10px;
+}
+
+.main-heading {
+    border-bottom: solid 1px #9F2B68;
+    margin-bottom:15px;
+}
+
+.myTabs{
+    margin:30px;
 }

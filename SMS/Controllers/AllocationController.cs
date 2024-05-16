@@ -27,14 +27,17 @@ namespace SMS.Controllers
             ViewBag.Teachers = _teacherBL.GetAllTeacher().Where(t => t.IsEnable == true).Select(t => new { TeacherID = t.TeacherID, DisplayName = t.TeacherRegNo + " -  " + t.DisplayName }).ToList();
             ViewBag.Students = _studentBL.GetAllStudents().Where(t => t.IsEnable == true).Select(t => new { StudentID = t.StudentID, DisplayName = t.StudentRegNo + " -  " + t.DisplayName }).ToList();
         }
-        // GET: Allocation
+        
         public ActionResult Index()
         {
             return View();
         }
 
-        //For Subject Allocation
-
+        //****************************************************************For Subject Allocation****************************************************************************
+        /// <summary>
+        /// Get all allocation details
+        /// </summary>
+        /// <returns></returns>
         public ActionResult AllSubjectTeacherAllocation()
         {
             var allAllocationSubjects = _allocationBL.GetAllSubjectAllocation();
@@ -51,6 +54,11 @@ namespace SMS.Controllers
 
         }
 
+        /// <summary>
+        /// Delete one allocation based on the id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult DeleteTeacherSubjectAllocation(long id)
         {
             var msg = "";
@@ -177,6 +185,11 @@ namespace SMS.Controllers
 
         }
 
+        /// <summary>
+        /// add a new allocation or edit allocation
+        /// </summary>
+        /// <param name="studentAllocation"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddStudentAllocation(StudentAllocationBO studentAllocation)
@@ -204,7 +217,10 @@ namespace SMS.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Get subject details which is allocated to a teacher
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GetAllocatedSubject()
         {
             var data=_allocationBL.GetAllocatedSubjects().ToList();
@@ -221,7 +237,11 @@ namespace SMS.Controllers
 
         }
 
-
+        /// <summary>
+        /// Get teacher details who is allocated to a teacher
+        /// </summary>
+        /// <param name="subjectId"></param>
+        /// <returns></returns>
         public JsonResult GetTeachersBySubject(long subjectId)
         {
             var selectedTeachers = _allocationBL.GetAllocatedTeachers(subjectId);
@@ -229,6 +249,12 @@ namespace SMS.Controllers
 
         }
 
+        /// <summary>
+        /// get the subject allocation id when particular theacher allocated for a particular subject
+        /// </summary>
+        /// <param name="subjectId"></param>
+        /// <param name="teacherId"></param>
+        /// <returns></returns>
         [HttpGet]
         public JsonResult GetAllocationID(long subjectId, long teacherId)
         {

@@ -17,7 +17,7 @@
 
     <div class="form-group row m-1">
         <div class="col-md-4 p-2">
-            @Html.LabelFor(model => model.TeacherID, "Teacher")
+            @Html.LabelFor(model => model.TeacherID, "Teacher")<span class="required-asterisk text-danger">*</span>
         </div>
         <div class="col-md-8">
             @if (Model.SubjectAllocationID != 0)
@@ -36,7 +36,7 @@
 
     <div class="form-group row m-1">
         <div class="col-md-4 p-2">
-            @Html.LabelFor(model => model.SubjectID, "Subject")
+            @Html.LabelFor(model => model.SubjectID, "Subject")<span class="required-asterisk text-danger">*</span>
         </div>
         <div class="col-md-8">
             @Html.DropDownListFor(model => model.SubjectID, new SelectList(ViewBag.Subjects, "SubjectID", "Name"), "select Subject", new { @class = "form-select" })

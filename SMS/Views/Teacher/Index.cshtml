@@ -4,99 +4,103 @@
     ViewBag.Title = "Teachers";
 }
 
-<div id="heading">
-    <h2>Teachers</h2>
-
-    <hr />
-</div>
+<div class="full-body">
+    <div id="heading" class="main-heading">
+        <h2>Teachers</h2>
 
 
-<div class="panel container-fluid mb-5" id="hidable_details">
-    <div class="panel-heading d-flex align-items-center justify-content-between">
-        <div>
-            <button id="addNew" class="btn btn-secondary me-3">Add New Teacher</button>
-        </div>
-        <div class="d-flex align-items-center">
-            <div class="me-3">
-                <select id="pageSize" class="form-select text-dark">
-                    <option value="5" selected>5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                </select>
-            </div>
-            <div class="me-3">
-                <select id="filterCriteria" class="form-select text-dark">
-                    <option value="" selected>All</option>
-                    <option value="true">Enabled</option>
-                    <option value="false">Disabled</option>
-                </select>
-            </div>
-            <div class="search-wrapper">
-                <select id="searchCriteria" class="form-select text-dark me-2">
-                    <option value="" selected disabled>All</option>
-                    <option value="TeacherReg">Registration No</option>
-                    <option value="DisplayName">Display Name</option>
-                </select>
-                <input type="text" id="searchQuery" class="form-control" placeholder="Search...">
-            </div>
-        </div>
     </div>
-</div>
 
 
-
-<div class="panel container-fluid w-100" id="teacherDetails">
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover w-100 table-striped">
-                <thead>
-                    <tr class="th_head">
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().TeacherRegNo)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().FirstName)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().MiddleName)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().LastName)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().DisplayName)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().Email)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().Gender)</th>
-                        <th >@Html.DisplayNameFor(model => model.Teachers.First().DOB)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().Address)</th>
-                        <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().ContactNo)</th>
-                        <th>@Html.DisplayNameFor(model => model.Teachers.First().IsEnable)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-            <div class="container-fluid">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-container">
-                        <li class="page-item mr-auto" id="prevButton">
-                            <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                        <li class="page-item ml-auto" id="nextButton">
-                            <a class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+    <div class="panel container-fluid mb-5" id="hidable_details">
+        <div class="panel-heading d-flex align-items-center justify-content-between">
+            <div>
+                <button id="addNew" class="btn btn-secondary me-3">Add New Teacher</button>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    <select id="pageSize" class="form-select text-dark">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                    </select>
+                </div>
+                <div class="me-3">
+                    <select id="filterCriteria" class="form-select text-dark">
+                        <option value="" selected>All</option>
+                        <option value="true">Enabled</option>
+                        <option value="false">Disabled</option>
+                    </select>
+                </div>
+                <div class="search-wrapper">
+                    <select id="searchCriteria" class="form-select text-dark me-2">
+                        <option value="" selected disabled>All</option>
+                        <option value="TeacherReg">Registration No</option>
+                        <option value="DisplayName">Display Name</option>
+                    </select>
+                    <input type="text" id="searchQuery" class="form-control" placeholder="Search...">
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="addEdit">
-    <div id="addTeacherForm" class="container-fluid" style="display: none;">
-        
+
+
+    <div class="panel container-fluid w-100" id="teacherDetails">
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover w-100 table-striped">
+                    <thead>
+                        <tr class="th_head">
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().TeacherRegNo)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().FirstName)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().MiddleName)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().LastName)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().DisplayName)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().Email)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().Gender)</th>
+                            <th>@Html.DisplayNameFor(model => model.Teachers.First().DOB)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().Address)</th>
+                            <th id="sorting">@Html.DisplayNameFor(model => model.Teachers.First().ContactNo)</th>
+                            <th>@Html.DisplayNameFor(model => model.Teachers.First().IsEnable)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <div class="container-fluid">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-container">
+                            <li class="page-item mr-auto" id="prevButton">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                            <li class="page-item ml-auto" id="nextButton">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
     </div>
-    
 
+    <div class="addEdit">
+        <div id="addTeacherForm" class="container-fluid" style="display: none;">
+
+        </div>
+
+
+    </div>
+    <div id="searchResults"></div>
 </div>
-<div id="searchResults"></div>
+
+
 
 
 @section Scripts{
@@ -267,7 +271,7 @@
                     }
                 });
             } else {
-                Swal.fire({ icon: 'error', title: 'Error', text: response.message });
+                Swal.fire({ icon: 'warning', title: 'Alert!', text: response.message });
             }
         }
 

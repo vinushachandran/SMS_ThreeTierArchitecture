@@ -1,20 +1,22 @@
-﻿
-<div class="panel panel-default">
-    <div class="container-fluid">
-        <ul class="nav nav-tabs" id="main-tab" role="tablist">
-            <li class="nav-item allocation-list" role="presentation">
-                <button class="nav-link active" id="first-tab" data-bs-toggle="tab" data-bs-target="#tab-one-content" area-selected="true">Teacher Subject Allocation</button>
-            </li>
-            <li class="nav-item allocation-list" role="presentation">
-                <button class="nav-link" id="second-tab" data-bs-toggle="tab" data-bs-target="#tab-two-content" area-selected="false">Student Subject Teacher Allocation</button>
-            </li>
-        </ul>
+﻿<div class="myTabs">
+    <ul class="nav nav-tabs" id="main-tab" role="tablist">
+        <li class="nav-item allocation-list" role="presentation">
+            <button class="nav-link active" id="first-tab" data-bs-toggle="tab" data-bs-target="#tab-one-content" area-selected="true">Teacher Subject Allocation</button>
+        </li>
+        <li class="nav-item allocation-list" role="presentation">
+            <button class="nav-link" id="second-tab" data-bs-toggle="tab" data-bs-target="#tab-two-content" area-selected="false">Student Subject Teacher Allocation</button>
+        </li>
+    </ul>
+</div>
+<div class="panel panel-default full-body">
+    <div class="container-fluid"> 
+        
         <div class="tab-content" id="TabContent">
             @* teacher subject allocation div *@
             <div class="tab-pane show active allocationContent" id="tab-one-content" role="tabpanel" aria-labelledby="first-tab">
                 <div class="panel container-fluid mb-5">
-                    <div class="text-center">
-                        <h2 class="mb-5"> Teacher Subject Allocation</h2>
+                    <div class="main-heading">
+                        <h2> Teacher Subject Allocation</h2>
                         
 
                     </div>
@@ -291,7 +293,7 @@
                         },
                         error: function (error) {
                             console.log(error);
-                            Swal.fire('Error!', 'An error occurred while deleting the teacher.', 'error');
+                            Swal.fire('Alert!', 'An error occurred while deleting the teacher.', 'warning');
                         }
                     });
                 }
@@ -311,7 +313,7 @@
                 },
                 error: function (error) {
                     console.log(error);
-                    Swal.fire('Error!', 'An error occurred while fetching teacher details.', 'error');
+                    Swal.fire('Alert!', 'An error occurred while fetching teacher details.', 'warning');
                 }
 
             });
@@ -431,7 +433,7 @@
 
         function addStudentAllocationFailure(xhr, status, error) {
             console.error("Error adding teacher subject allocation:", error);
-            Swal.fire('Error!', 'An error occurred while adding the teacher subject allocation.', 'error');
+            Swal.fire('Alert!', 'An error occurred while adding the teacher subject allocation.', 'warning');
         }
 
         function deleteStudentAllocation(id) {
@@ -455,12 +457,12 @@
                                 Swal.fire('Deleted!', 'Record deleted successfully.', 'success');
 
                             } else {
-                                Swal.fire('Allert!', response.message, 'warning');
+                                Swal.fire('Alert!', response.message, 'warning');
                             }
                         },
                         error: function (error) {
                             console.log(error);
-                            Swal.fire('Error!', 'An error occurred while deleting the teacher.', 'error');
+                            Swal.fire('Alert!', 'An error occurred while deleting the teacher.', 'warning');
                         }
                     });
                 }
@@ -504,7 +506,7 @@
                 },
                 error: function (error) {
                     console.log(error);
-                    Swal.fire('Error!', 'An error occurred while fetching student allocation details.', 'error');
+                    Swal.fire('Alert!', 'An error occurred while fetching student allocation details.', 'warning');
                 }
             });
         }

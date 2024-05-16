@@ -275,11 +275,23 @@ namespace SMS.BL.Allocation
 
         }
 
+        /// <summary>
+        /// To check this allocation already exist or not
+        /// </summary>
+        /// <param name="studentAllocation"></param>
+        /// <returns></returns>
         public bool CheckDuplicateStudentAllocation(StudentAllocationBO studentAllocation)
         {
             bool isDuplicateAllocation = Student_Subject_Teacher_Allocation.Any(s => s.SubjectAllocationID == studentAllocation.SubjectAllocationID && s.StudentID == studentAllocation.StudentID);
             return isDuplicateAllocation;
         }
+
+        /// <summary>
+        /// add a new student allocation or edit already exist allocation
+        /// </summary>
+        /// <param name="studentAllocation"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
 
         public bool SaveStudentAllocation(StudentAllocationBO studentAllocation, out string msg)
         {
@@ -329,6 +341,10 @@ namespace SMS.BL.Allocation
 
         }
 
+        /// <summary>
+        /// Get the subject details which allocated in teacher subject allocation
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<object> GetAllocatedSubjects()
         {
             var subjects=Teacher_Subject_Allocation.Select(a=>new {SubjectID=a.SubjectID,Name=a.Subject.SubjectCode+" - "+a.Subject.Name}).Distinct();
@@ -336,7 +352,11 @@ namespace SMS.BL.Allocation
 
         }
 
-
+        /// <summary>
+        /// Get the Teacher details who allocated in teacher subject allocation
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IEnumerable<object> GetAllocatedTeachers(long id)
         {
             var teachers = Teacher_Subject_Allocation. Where(t=> t.SubjectID==id).Select(a => new { Value = a.TeacherID, Text = a.Teacher.DisplayName}).ToList();
@@ -344,6 +364,12 @@ namespace SMS.BL.Allocation
 
         }
 
+        /// <summary>
+        /// Get the subject allocation id when techer id and subject id are same
+        /// </summary>
+        /// <param name="subjectID"></param>
+        /// <param name="teacherID"></param>
+        /// <returns></returns>
         public long GetSubjectAllocationID(long subjectID, long teacherID)
         {
             var allocationID=Teacher_Subject_Allocation.Where(s=>s.SubjectID==subjectID && s.TeacherID==teacherID).Select(s=>s.SubjectAllocationID).FirstOrDefault();

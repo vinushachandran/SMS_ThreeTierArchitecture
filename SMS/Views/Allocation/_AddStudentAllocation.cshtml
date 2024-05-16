@@ -13,7 +13,7 @@
 {
 
     @Html.HiddenFor(model => model.StudentAllocationID)
-    @Html.HiddenFor(model => model.SubjectAllocationID, new {id="SubjectAllocationID"})
+    @Html.HiddenFor(model => model.SubjectAllocationID, new {id="subAllocationID"})
 
 
 
@@ -23,7 +23,7 @@
 
     <div class="form-group row m-1">
         <div class="col-md-4 p-2">
-            @Html.LabelFor(model => model.StudentID, "Student")
+            @Html.LabelFor(model => model.StudentID, "Student")<span class="required-asterisk text-danger">*</span>
         </div>
         <div class="col-md-8 ">
             @if (Model.StudentAllocationID != 0)
@@ -42,7 +42,7 @@
 
     <div class="form-group row m-1">
         <div class="col-md-4 p-2">
-            @Html.Label("Subject", htmlAttributes: new { @class = "control-label" })
+            @Html.Label("Subject", htmlAttributes: new { @class = "control-label" })<span class="required-asterisk text-danger">*</span>
         </div>
         <div class="col-md-8">
             <select id="subjectDropdown" class="form-select">
@@ -54,7 +54,7 @@
 
     <div class="form-group row m-1">
         <div class="col-md-4 p-2">
-            @Html.Label("Teacher", htmlAttributes: new { @class = "control-label" })
+            @Html.Label("Teacher", htmlAttributes: new { @class = "control-label" })<span class="required-asterisk text-danger">*</span>
         </div>
         <div class="col-md-8">
             <select id="teacherDropdown" class="form-select">
@@ -119,7 +119,7 @@
                     type: 'GET',
                     data: { subjectID: subjectID, teacherID: teacherID },
                     success: function (response) {
-                        $('#SubjectAllocationID').val(response);                   
+                        $('#subAllocationID').val(response);                   
                     },
                     error: function () {
                         console.log('Error fetching teachers.');
