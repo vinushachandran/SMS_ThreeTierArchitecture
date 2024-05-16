@@ -1,5 +1,6 @@
 ﻿using SMS.BL;
 using SMS.BL.Allocation;
+using SMS.BL.Student;
 using SMS.BL.Teacher;
 using SMS.Models.Allocation;
 using SMS.Models.Teacher;
@@ -19,11 +20,12 @@ namespace SMS.Controllers
         private readonly AllocationBL _allocationBL = new AllocationBL();
         private readonly TeacherBL _teacherBL=new TeacherBL();
         private readonly SubjectBL _subjectBL = new SubjectBL();
-
+        private readonly StudentBL _studentBL = new StudentBL();
         public AllocationController() 
         {
             ViewBag.Subjects = _subjectBL.GetAllSubject().Where(s => s.IsEnable == true).Select(s => new { SubjectID = s.SubjectID, Name = s.SubjectCode + " - " + s.Name }).ToList();
             ViewBag.Teachers = _teacherBL.GetAllTeacher().Where(t => t.IsEnable == true).Select(t => new { TeacherID = t.TeacherID, DisplayName = t.TeacherRegNo + " -  " + t.DisplayName }).ToList();
+            ViewBag.Students = _studentBL.GetAllStudents().Where(t => t.IsEnable == true).Select(t => new { StudentID = t.StudentID, DisplayName = t.StudentRegNo + " -  " + t.DisplayName }).ToList();
         }
         // GET: Allocation
         public ActionResult Index()
@@ -175,10 +177,65 @@ namespace SMS.Controllers
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddStudentAllocation(StudentAllocationBO studentAllocation)
+        {
+            var msg = "";
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    bool isSaveSuccess = _allocationBL.SaveStudentAllocation(studentAllocation, out msg);
 
-       
+                    return Json(new { success = isSaveSuccess, message = msg });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "Error occurred while adding the Student allocation: " + ex.Message });
+                }
+            }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                                              .Select(e => e.ErrorMessage)
+                                              .ToList();
+                return Json(new { success = false, message = "Please fill all details.", errors = errors });
+            }
+        }
 
 
+        public ActionResult GetAllocatedSubject()
+        {
+            var data=_allocationBL.GetAllocatedSubjects().ToList();
+
+            if (data.Count>0)
+            {
+
+                return Json(new { success = true, data = data }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = "Data Not Found" }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+
+        public JsonResult GetTeachersBySubject(long subjectId)
+        {
+            var selectedTeachers = _allocationBL.GetAllocatedTeachers(subjectId);
+            return Json(selectedTeachers, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpGet]
+        public JsonResult GetAllocationID(long subjectId, long teacherId)
+        {
+            var selectedAllocationID = _allocationBL.GetSubjectAllocationID(subjectId,teacherId);
+            return Json(selectedAllocationID, JsonRequestBehavior.AllowGet);
+
+        }
 
 
 

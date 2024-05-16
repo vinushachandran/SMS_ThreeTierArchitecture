@@ -329,6 +329,29 @@ namespace SMS.BL.Allocation
 
         }
 
+        public IEnumerable<object> GetAllocatedSubjects()
+        {
+            var subjects=Teacher_Subject_Allocation.Select(a=>new {SubjectID=a.SubjectID,Name=a.Subject.SubjectCode+" - "+a.Subject.Name}).Distinct();
+            return subjects;
+
+        }
+
+
+        public IEnumerable<object> GetAllocatedTeachers(long id)
+        {
+            var teachers = Teacher_Subject_Allocation. Where(t=> t.SubjectID==id).Select(a => new { Value = a.TeacherID, Text = a.Teacher.DisplayName}).ToList();
+            return teachers;
+
+        }
+
+        public long GetSubjectAllocationID(long subjectID, long teacherID)
+        {
+            var allocationID=Teacher_Subject_Allocation.Where(s=>s.SubjectID==subjectID && s.TeacherID==teacherID).Select(s=>s.SubjectAllocationID).FirstOrDefault();
+            return allocationID;
+        }
+
+
+
 
     }
 }

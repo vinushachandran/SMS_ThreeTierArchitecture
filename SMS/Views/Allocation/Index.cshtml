@@ -145,13 +145,13 @@
             //Subject Teachers
             $('.addNew2').click(function () {
                 $('.addNew2').hide();
-                $('#studentAllocationTable').hide();
-                activeSubjectTeacher();
+                $('#studentAllocationTable').hide();               
                 $.ajax({
                     url: '/Allocation/AddStudentAllocation',
                     type: 'GET',
                     success: function (response) {
                         $('#addStudentAllocationForm').html(response);
+                        activeSubjectTeacher();
                         $.validator.unobtrusive.parse($('#addStudentAllocationForm'));
                         $('#addStudentAllocationForm').show();
 
@@ -160,34 +160,7 @@
 
             });
 
-            $('#subjectDropdown').change(function () {
-                var subjectId = $(this).val();
-                if (subjectId !== '') {
-                    $.ajax({
-                        url: '/Allocation/GetTeachersBySubject',
-                        type: 'GET',
-                        data: { subjectId: subjectId },
-                        success: function (response) {
-                            $('#teacherDropdown').empty();
-                            $.each(response, function (index, item) {
-                                $('#teacherDropdown').append($('<option>', {
-                                    value: item.Value,
-                                    text: item.Text
-                                }));
-                            });
-                        },
-                        error: function () {
-                            console.log('Error fetching teachers.');
-                        }
-                    });
-                } else {
-                    $('#teacherDropdown').empty();
-                    $('#teacherDropdown').append($('<option>', {
-                        value: '',
-                        text: 'Select Teacher'
-                    }));
-                }
-            });
+            
 
 
         });
@@ -427,46 +400,7 @@
             });
         }
 
-        //add Allocation
-        function getAllocationID() {
-            var subjectId = $('#subjectDropdown').val();
-            var teacherId = $('#teacherDropdown').val();
-            var subjectAllocationID = $('#subjectAllocationID');
-
-            if (subjectId == '' && teacherId == '') {
-                subjectId = $('#editStudentAllocationForm #subjectDropdown').val();
-                teacherId = $('#editStudentAllocationForm #teacherDropdown').val();
-                subjectAllocationID = $('#editStudentAllocationForm #subjectAllocationID');
-            }
-
-            if (subjectId !== '' && teacherId !== '') {
-                $.ajax({
-                    url: '/Allocation/GetAllocationID',
-                    type: 'GET',
-                    data: { subjectId: subjectId, teacherId: teacherId },
-                    success: function (response) {
-                        $(subjectAllocationID).val(response);
-                        subjectId = '';
-                        teacherId = '';
-                        subjectAllocationID = '';
-
-
-                    },
-                    error: function () {
-                        console.log('Error fetching allocation ID.');
-                    }
-                });
-            }
-            else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Allert!',
-                    text: 'Please select subject and teacher.'
-                });
-                return;
-            }
-        }
-
+        
 
         //Add Student allocation
         function addStudentAllocationSuccess(response) {
@@ -539,28 +473,19 @@
         //editSubjectAllocation
         function editStudentAllocation(studentAllocationID) {
             $.ajax({
-                url: '/Allocation/EditStudentAllocation/' + studentAllocationID,
+                url: '/Allocation/AddStudentAllocation/' + studentAllocationID,
                 type: 'GET',
                 success: function (data) {
                     $('#addStudentAllocationForm').html(data);
                     $('#addStudentAllocationForm').show();
-                    $.validator.unobtrusive.parse($('#editStudentAllocationForm'));
+                    
                     $.ajax({
                         url: '/Allocation/GetAllocatedSubject',
                         type: 'GET',
                         success: function (response) {
-                            $('#addStudentAllocationForm #subjectDropdown').empty().append($('<option>', {
-                                value: '',
-                                text: 'Select Subject'
-                            }));
-                            $('#addStudentAllocationForm #teacherDropdown').empty().append($('<option>', {
-                                value: '',
-                                text: 'Select Teacher'
-                            }));
-
                             if (response.success) {
                                 $.each(response.data, function (index, item) {
-                                    $('#addStudentAllocationForm #subjectDropdown').append($('<option>', {
+                                    $('#subjectDropdown').append($('<option>', {
                                         value: item.SubjectID,
                                         text: item.Name
                                     }));
@@ -573,10 +498,8 @@
                             console.log('Error fetching allocated subjects.');
                         }
                     });
-                    $.validator.unobtrusive.parse($('#editStudentAllocationForm'));
-                    subjectOnchangeTeacher();
-                    $('#studentAllocationTable').hide();
-                   
+                    $.validator.unobtrusive.parse($('#addStudentAllocationForm'));
+                    $('#studentAllocationTable').hide();                   
                     $('.addNew2').hide();
                 },
                 error: function (error) {
@@ -586,37 +509,7 @@
             });
         }
 
-        function subjectOnchangeTeacher() {
-            //Subject Teachers
-            $('#editStudentAllocationForm #subjectDropdown').change(function () {
-                var subjectId = $(this).val();
-                if (subjectId !== '') {
-                    $.ajax({
-                        url: '/Allocation/GetTeachersBySubject',
-                        type: 'GET',
-                        data: { subjectId: subjectId },
-                        success: function (response) {
-                            $('#editStudentAllocationForm #teacherDropdown').empty();
-                            $.each(response, function (index, item) {
-                                $('#editStudentAllocationForm #teacherDropdown').append($('<option>', {
-                                    value: item.Value,
-                                    text: item.Text
-                                }));
-                            });
-                        },
-                        error: function () {
-                            console.log('Error fetching teachers.');
-                        }
-                    });
-                } else {
-                    $('#editStudentAllocationForm #teacherDropdown').empty();
-                    $('#editStudentAllocationForm #teacherDropdown').append($('<option>', {
-                        value: '',
-                        text: 'Select Teacher'
-                    }));
-                }
-            });
-        }
+        
 
 
 
