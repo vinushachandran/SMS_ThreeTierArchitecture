@@ -31,11 +31,11 @@
                 <div class="table-responsive" id="table-datails-teachers">
                     <table id="subjectAllocationTable" class="table table-bordered table-striped">
                         <thead class="text-center tableHeading">
-                            <tr>
-                                <th class="sorting">Subject Code</th>
-                                <th class="sorting">Subject Name</th>
+                            <tr class="th_head">
                                 <th class="sorting">Teacher Registration No</th>
                                 <th class="sorting">Teacher Name</th>
+                                <th class="sorting">Subject Code</th>
+                                <th class="sorting">Subject Name</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -59,8 +59,8 @@
             @* Students subject allocation div *@
         <div class="tab-pane show allocationContent" id="tab-two-content" role="tabpanel" aria-labelledby="second-tab">
             <div class="panel container-fluid mb-5">
-                <div class="text-center">
-                    <h2 class="mb-5"> Student Subject Teacher Allocation</h2>
+                <div class="main-heading">
+                    <h2`> Student Subject Teacher Allocation</h2`>
 
                 </div>
                 <div class="panel-heading d-flex align-items-center justify-content-between">
@@ -71,25 +71,20 @@
                 </div>
             </div>
 
-            <div class="table-responsive" id="table-datails-students">
-                <table id="studentAllocationTable" class="table table-bordered table-striped">
-                    <thead class="text-center tableHeading">
-                        <tr>
-                            <th class="sorting">Student Registration Number</th>
-                            <th class="sorting">Student Name</th>
-                            <th class="sorting">Subject Code</th>
-                            <th class="sorting">Subject Name</th>
-                            <th class="sorting">Teacher Registration No</th>
-                            <th class="sorting">Teacher Name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-center" id="studentAllocationTableBody"></tbody>
+           
 
-                </table>
+                <div class="card" id="studentAllocationTableBody">
+                    <h5 class="card-header"></h5>
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text"></p>
+                        <a href="#" ></a>
+                    </div>
+                </div>
+
                 <div class="addEdit">
                     <div id="addStudentAllocationForm" class="container-fluid" style="display: none;">
-                        
+
                     </div>
                 </div>
 
@@ -99,7 +94,7 @@
         </div>
         </div>
     </div>
-</div>
+
 
 
 
@@ -174,37 +169,8 @@
                 url: '/Allocation/AllSubjectTeacherAllocation',
                 type: 'GET',
                 success: function (data) {
-                    if (data.success) {
-                        $('#teacherSubjectAllocationTable').empty();
-
-
-                        $.each(data.data, function (index, item) {
-                            var row = $('<tr>').appendTo('#teacherSubjectAllocationTable');
-                            $('<td>').text(item.SubjectCode).appendTo(row);
-                            $('<td>').text(item.SubjectName).appendTo(row);
-                            $('<td>').text(item.TeacherRegNo).appendTo(row);
-                            $('<td>').text(item.TeacherName).appendTo(row);
-
-
-                            var actionCell = $('<td>').appendTo(row);
-                            var editButton = $('<button>').addClass('btn btn-primary btn-sm').appendTo(actionCell);
-                            editButton.append($('<i>').addClass('bi bi-pencil-fill'));
-                            editButton.click(function () {
-                                editTeacherSubjectAllocation(item.SubjectAllocationID);
-                            });
-
-                            var deleteButton = $('<button>').addClass('btn btn-danger btn-sm').appendTo(actionCell);
-                            deleteButton.append($('<i>').addClass('bi bi-trash'));
-                            deleteButton.click(function () {
-                                deleteTeacherSubjectAllocation(item.SubjectAllocationID);
-                            });
-
-
-                        });
-                    } else {
-
-                        $('#teacherSubjectAllocationTable').html('<tr><td colspan="4">' + data.message + '</td></tr>');
-                    }
+                    //console.log(data)
+                    $('#teacherSubjectAllocationTable').html(data);
                 },
                 error: function () {
 
@@ -328,39 +294,41 @@
                 url: '/Allocation/AllStudentAllocation',
                 type: 'GET',
                 success: function (data) {
-                    if (data.success) {
-                        $('#studentAllocationTableBody').empty();
+                    //console.log(data);
+                    $("#studentAllocationTableBody").html(data);
+                    //if (data.success) {
+                    //    $('#studentAllocationTableBody').empty();
 
 
-                        $.each(data.data, function (index, item) {
-                            var row = $('<tr>').appendTo('#studentAllocationTableBody');
-                            $('<td>').text(item.studentRegNo).appendTo(row);
-                            $('<td>').text(item.StudentName).appendTo(row);
-                            $('<td>').text(item.subjectCode).appendTo(row);
-                            $('<td>').text(item.SubjectName).appendTo(row);
-                            $('<td>').text(item.teacherRegNo).appendTo(row);
-                            $('<td>').text(item.TeacherName).appendTo(row);
+                    //    $.each(data.data, function (index, item) {
+                    //        var row = $('<tr>').appendTo('#studentAllocationTableBody');
+                    //        $('<td>').text(item.studentRegNo).appendTo(row);
+                    //        $('<td>').text(item.StudentName).appendTo(row);
+                    //        $('<td>').text(item.subjectCode).appendTo(row);
+                    //        $('<td>').text(item.SubjectName).appendTo(row);
+                    //        $('<td>').text(item.teacherRegNo).appendTo(row);
+                    //        $('<td>').text(item.TeacherName).appendTo(row);
 
 
-                            var actionCell = $('<td>').appendTo(row);
-                            var editButton = $('<button>').addClass('btn btn-primary btn-sm').appendTo(actionCell);
-                            editButton.append($('<i>').addClass('bi bi-pencil-fill'));
-                            editButton.click(function () {
-                                editStudentAllocation(item.studentAllocationID);
-                            });
+                    //        var actionCell = $('<td>').appendTo(row);
+                    //        var editButton = $('<button>').addClass('btn btn-primary btn-sm').appendTo(actionCell);
+                    //        editButton.append($('<i>').addClass('bi bi-pencil-fill'));
+                    //        editButton.click(function () {
+                    //            editStudentAllocation(item.studentAllocationID);
+                    //        });
 
-                            var deleteButton = $('<button>').addClass('btn btn-danger btn-sm').appendTo(actionCell);
-                            deleteButton.append($('<i>').addClass('bi bi-trash'));
-                            deleteButton.click(function () {
-                                deleteStudentAllocation(item.studentAllocationID);
-                            });
+                    //        var deleteButton = $('<button>').addClass('btn btn-danger btn-sm').appendTo(actionCell);
+                    //        deleteButton.append($('<i>').addClass('bi bi-trash'));
+                    //        deleteButton.click(function () {
+                    //            deleteStudentAllocation(item.studentAllocationID);
+                    //        });
 
 
-                        });
-                    } else {
+                    //    });
+                    //} else {
 
-                        $('#studentAllocationTable').html('<tr><td colspan="4">' + data.message + '</td></tr>');
-                    }
+                    //    $('#studentAllocationTable').html('<tr><td colspan="4">' + data.message + '</td></tr>');
+                    //}
                 },
                 error: function () {
 

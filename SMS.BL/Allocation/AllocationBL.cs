@@ -3,6 +3,7 @@ using SMS.Data;
 using SMS.Models.Allocation;
 using SMS.Models.Student;
 using SMS.Models.Subject;
+using SMS.ViewModels.Allocation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,23 +20,33 @@ namespace SMS.BL.Allocation
         /// get all subject allocation details
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<object> GetAllSubjectAllocation()
+        public IEnumerable<SubjectAllocationGroupByTeacherViewModel> GetAllSubjectAllocation()
         {
-            
 
-            var allSubjectAllocations = Teacher_Subject_Allocation.Include("Subject").Include("Teacher").ToList();
-
-           
+            var allSubjectAllocations = Teacher_Subject_Allocation.Include("Subject").Include("Teacher").ToList();           
 
             if (allSubjectAllocations.Count > 0)
             {
-                var data = allSubjectAllocations.Select(item => new
+                var result = allSubjectAllocations.Select(item => new
                 {
                     SubjectAllocationID = item.SubjectAllocationID,
                     SubjectCode = item.Subject.SubjectCode,
                     SubjectName = item.Subject.Name,
                     TeacherRegNo = item.Teacher.TeacherRegNo,
                     TeacherName = item.Teacher.DisplayName
+                }).GroupBy(s => new {s.TeacherName,s.TeacherRegNo}).ToList();
+
+                var data = result.Select(s => new SubjectAllocationGroupByTeacherViewModel
+                {
+                    TeacherName = s.Key.TeacherName,
+                    TeacherRegNo = s.Key.TeacherRegNo,
+                    SubjectAllocations = s.Select(x => new SubjectAllocationViewModel
+                    {
+                        SubjectAllocationID = x.SubjectAllocationID,
+                        SubjectCode = x.SubjectCode,
+                        SubjectName = x.SubjectName,
+
+                    }).ToList()
                 });
 
                 return data;
@@ -192,7 +203,7 @@ namespace SMS.BL.Allocation
         /// To get all the students allocation details
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<object> GetAllStudentAllocation()
+        public IEnumerable<StudentAllocationGroupByStudentViewModel> GetAllStudentAllocation()
         {
             var allStudentAllocations = Student_Subject_Teacher_Allocation
                           .Include("Teacher_Subject_Allocation.Subject")
@@ -202,7 +213,7 @@ namespace SMS.BL.Allocation
 
             if (allStudentAllocations.Count > 0)
             {
-                var data = allStudentAllocations.Select(item => new
+                var result = allStudentAllocations.Select(item => new
                 {
                     studentAllocationID = item.StudentAllocationID,
                     StudentID = item.StudentID,
@@ -214,7 +225,26 @@ namespace SMS.BL.Allocation
                     TeacherID = item.Teacher_Subject_Allocation.TeacherID,
                     teacherRegNo = item.Teacher_Subject_Allocation.Teacher.TeacherRegNo,
                     TeacherName = item.Teacher_Subject_Allocation.Teacher.DisplayName
-                }); 
+                }).GroupBy(s => new {s.StudentName,s.studentRegNo}).ToList();
+
+                var data = result.Select(s => new StudentAllocationGroupByStudentViewModel
+                {
+                    StudentName = s.Key.StudentName,
+                    StudentRegNo = s.Key.studentRegNo,
+                    subjectAllocations = s.GroupBy(x => new { x.TeacherName, x.teacherRegNo })
+                        .Select(y => new SubjectAllocationGroupByTeacherViewModel
+                         {
+                             TeacherName = y.Key.TeacherName,
+                             TeacherRegNo = y.Key.teacherRegNo,
+                             SubjectAllocations = y.Select(subject => new SubjectAllocationViewModel
+                             {
+                                 StudentAllocationID = subject.studentAllocationID,
+                                 SubjectCode = subject.subjectCode,
+                                 SubjectName = subject.SubjectName,
+                                 TeacherRegNo = subject.teacherRegNo
+                             }).ToList()
+                         }).ToList()
+                     });
 
                 return data;
             }

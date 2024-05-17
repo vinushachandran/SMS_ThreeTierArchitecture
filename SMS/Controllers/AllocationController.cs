@@ -40,17 +40,10 @@ namespace SMS.Controllers
         /// <returns></returns>
         public ActionResult AllSubjectTeacherAllocation()
         {
-            var allAllocationSubjects = _allocationBL.GetAllSubjectAllocation();
+           var allocatedSubject=new AllocationViewModel();
 
-            if (allAllocationSubjects !=null)
-            {
-
-                return Json(new { success = true, data = allAllocationSubjects }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { success = false, message = "Data Not Found" }, JsonRequestBehavior.AllowGet);
-            }
+            allocatedSubject.SubjectAllocations = _allocationBL.GetAllSubjectAllocation();
+            return PartialView("_AllSubjectAllocations",allocatedSubject.SubjectAllocations);
 
         }
 
@@ -134,17 +127,22 @@ namespace SMS.Controllers
         //For Student allocation
         public ActionResult AllStudentAllocation()
         {
-            var allAllocationStudents = _allocationBL.GetAllStudentAllocation();
+            var allocatedStudents = new AllocationViewModel();
+            allocatedStudents.StudentAllocations = _allocationBL.GetAllStudentAllocation();
+            return PartialView("__AllStudentAllocations", allocatedStudents.StudentAllocations);
 
-            if (allAllocationStudents != null)
-            {
 
-                return Json(new { success = true, data = allAllocationStudents }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { success = false, message = "Data Not Found" }, JsonRequestBehavior.AllowGet);
-            }
+            //var allAllocationStudents = _allocationBL.GetAllStudentAllocation();
+
+            //if (allAllocationStudents != null)
+            //{
+
+            //    return Json(new { success = true, data = allAllocationStudents }, JsonRequestBehavior.AllowGet);
+            //}
+            //else
+            //{
+            //    return Json(new { success = false, message = "Data Not Found" }, JsonRequestBehavior.AllowGet);
+            //}
 
         }
 

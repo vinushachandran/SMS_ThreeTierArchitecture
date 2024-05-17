@@ -1,0 +1,53 @@
+﻿@model IEnumerable<SMS.ViewModels.Allocation.StudentAllocationGroupByStudentViewModel>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var student in Model)
+    {
+        <div class="card mb-3">
+            <h5 class="card-header"><strong>Student - </strong>@student.StudentName (@student.StudentRegNo)</h5>
+            <div class="card-body">
+                <h5 class="card-title">Subjects and Teachers</h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Teacher</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var teacher in student.subjectAllocations)
+                                {
+                                    foreach (var subject in teacher.SubjectAllocations)
+                                    {
+                                        <tr>
+                                            <td>@subject.SubjectName (@subject.SubjectCode)</td>
+                                            <td>@teacher.TeacherName</td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-primary" onclick="editStudentAllocation(@subject.StudentAllocationID)">
+                                                    <i class="bi bi-pen small-icons"></i> Edit
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="deleteStudentAllocation(@subject.StudentAllocationID)">
+                                                    <i class="bi bi-trash small-icons"></i> Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        No data found.
+    </div>
+}

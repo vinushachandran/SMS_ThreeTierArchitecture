@@ -2,6 +2,7 @@
 ///
 /// </summary>
 /// <author>Vinusha</author>
+
 using SMS.BL.Student;
 using SMS.BL.Teacher;
 using SMS.Models.Student;
@@ -14,10 +15,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+
+
+
 namespace SMS.Controllers
 {
+
     public class StudentController : Controller
     {
+
         private readonly StudentBL _studentBL = new StudentBL();
         
         public ActionResult Index()

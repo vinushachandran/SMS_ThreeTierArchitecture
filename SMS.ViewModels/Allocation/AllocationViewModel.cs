@@ -13,10 +13,10 @@ namespace SMS.ViewModels.Allocation
         /// <summary>
         /// Get Subject allocations as a list
         /// </summary>
-        public IEnumerable<SubjectAllocationBO> SubjectAllocations { get; set; }
+        public IEnumerable<SubjectAllocationGroupByTeacherViewModel> SubjectAllocations { get; set; }
         /// <summary>
         /// Get Students allocations as a list
         /// </summary>
-        public IEnumerable<StudentAllocationBO> StudentAllocations { get; set;}
+        public IEnumerable<StudentAllocationGroupByStudentViewModel> StudentAllocations { get; set;}
     }
 }

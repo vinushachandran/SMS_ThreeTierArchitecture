@@ -1,0 +1,31 @@
+﻿@model IEnumerable<SMS.ViewModels.Allocation.SubjectAllocationGroupByTeacherViewModel>
+
+@if(Model!=null && Model.Any()) { 
+    foreach(var teacher in Model) { 
+        <tr>
+            <td>@teacher.TeacherRegNo</td>
+            <td>@teacher.TeacherName</td>
+            <td>
+                @foreach (var subject in teacher.SubjectAllocations)
+                {
+                    <p>@subject.SubjectCode</p>
+                }
+            </td>
+            <td>
+                @foreach (var subject in teacher.SubjectAllocations)
+                {
+                    <p>@subject.SubjectName</p>
+                }
+            </td>
+            <td>
+                @foreach (var subject in teacher.SubjectAllocations)
+                {
+                    <p>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="editTeacherSubjectAllocation(@subject.SubjectAllocationID)"><i class="bi bi-pencil-fill"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteTeacherSubjectAllocation(@subject.SubjectAllocationID)"><i class="bi bi-trash"></i></button>
+                    </p>
+                }
+            </td>
+        </tr>
+    }
+}
