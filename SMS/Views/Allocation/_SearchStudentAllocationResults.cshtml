@@ -1,5 +1,34 @@
 ﻿@model IEnumerable<SMS.ViewModels.Allocation.StudentAllocationGroupByStudentViewModel>
 
+<style>
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #dee2e6;
+        width: 33.33%;
+        text-align: center;
+    }
+
+    .align-middle {
+        vertical-align: middle !important;
+    }
+
+    .studentAllocationcardHeader {
+        background-color: #f0e6fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-body {
+        background-color: #fcfafe;
+        border-color: #9F2B68;
+    }
+
+    .delete-allocation {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>
 
 @if (Model != null && Model.Any())
 {
@@ -7,7 +36,7 @@
     {
         <div class="card mb-3 card-body">
             <div class="card-header studentAllocationcardHeader">
-                <div class="bg-light">
+                <div>
                     <strong>Student - </strong>@student.StudentName  (@student.StudentRegNo)
                 </div>
                 <div>
@@ -28,7 +57,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table table-bordered studentAllocationTable">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr class="studentAllocationTableHeader">
                                     <th>Teacher</th>
@@ -47,7 +76,7 @@
                                         <tr>
                                             @if (isFirstRow)
                                             {
-                                                <td rowspan="@subjectCount" class="align-middle Teacher-grp">@teacher.TeacherName</td>
+                                                <td rowspan="@subjectCount" class="align-middle">@teacher.TeacherName</td>
                                                 isFirstRow = false;
                                             }
 
@@ -81,3 +110,4 @@ else
         No data found.
     </div>
 }
+

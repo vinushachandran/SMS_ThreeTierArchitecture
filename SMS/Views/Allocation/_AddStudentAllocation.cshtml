@@ -89,6 +89,8 @@
                             value: '',
                             text: 'Select Teacher'
                         }));
+                        var id = 0
+                        $('#subAllocationID').val(id)
                         $.each(response, function (index, item) {
                             $('#teacherDropdown').append($('<option>', {
                                 value: item.Value,
@@ -112,21 +114,8 @@
 
         $('#teacherDropdown').change(function () {
             var teacherID = $(this).val();
-            var subjectID = $('#subjectDropdown').val();
-            if (subjectID && teacherID) {
-                $.ajax({
-                    url: '/Allocation/GetAllocationID',
-                    type: 'GET',
-                    data: { subjectID: subjectID, teacherID: teacherID },
-                    success: function (response) {
-                        $('#subAllocationID').val(response);                   
-                    },
-                    error: function () {
-                        console.log('Error fetching teachers.');
-                    }
-
-                });
-            }
+            $('#subAllocationID').val(teacherID);
+            
 
         });
 

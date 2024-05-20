@@ -104,7 +104,11 @@ namespace SMS.BL.Student
 
 
                     }
-                    
+                    var studentAllocation = Student_Subject_Teacher_Allocation.Where(s => s.StudentID == id).ToList();
+
+                    Student_Subject_Teacher_Allocation.RemoveRange(studentAllocation);
+                    SaveChanges();
+
                     Students.Remove(student);
                     SaveChanges();
                     return true;
@@ -211,15 +215,6 @@ namespace SMS.BL.Student
                 }
                 else
                 {
-                    if (CheckStudentInUse(id))
-                    {
-                        var allAllocation = Student_Subject_Teacher_Allocation.Where(a => a.StudentID == id).ToList();
-                        Student_Subject_Teacher_Allocation.RemoveRange(allAllocation);
-                        SaveChanges();                        
-
-                    }
-                    
-
                     student.IsEnable=false;
                     SaveChanges() ;
                     msg = "this student " + student.DisplayName + " successfully disabled!";

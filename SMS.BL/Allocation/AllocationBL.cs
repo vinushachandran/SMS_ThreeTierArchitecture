@@ -195,6 +195,27 @@ namespace SMS.BL.Allocation
         }
 
 
+        public IEnumerable<SubjectAllocationGroupByTeacherViewModel> GetSearchSubjectAllocations(string item, string criteria)
+        {
+            var allCriteria = GetAllSubjectAllocation();
+
+           
+            if (criteria == "Teacher-name1")
+            {
+                allCriteria = allCriteria.Where(s => s.TeacherName.ToUpper().Contains(item.ToUpper())).ToList();
+            }
+            else if (criteria == "Subject-name1")
+            {
+                allCriteria = allCriteria.Where(s => s.SubjectAllocations.Any(t => t.SubjectName.ToUpper().Contains(item.ToUpper()))).ToList();
+            }
+            else
+            {
+                allCriteria = allCriteria.Where(s => s.TeacherName.ToUpper().Contains(item.ToUpper()) || s.SubjectAllocations.Any(t => t.SubjectName.ToUpper().Contains(item.ToUpper()))).ToList();
+            }
+            return allCriteria;
+        }
+
+
 
         //******************************************************For Student Allocation********************************************************
 
@@ -203,7 +224,7 @@ namespace SMS.BL.Allocation
         /// To get all the students allocation details
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<StudentAllocationGroupByStudentViewModel> GetAllStudentAllocation()
+        public IEnumerable<StudentAllocationGroupByStudentViewModel> GetAllStudentAllocation(bool? isActive = null)
         {
             var allStudentAllocations = Student_Subject_Teacher_Allocation
                           .Include("Teacher_Subject_Allocation.Subject")
@@ -224,13 +245,16 @@ namespace SMS.BL.Allocation
                     SubjectName = item.Teacher_Subject_Allocation.Subject.Name,
                     TeacherID = item.Teacher_Subject_Allocation.TeacherID,
                     teacherRegNo = item.Teacher_Subject_Allocation.Teacher.TeacherRegNo,
-                    TeacherName = item.Teacher_Subject_Allocation.Teacher.DisplayName
-                }).GroupBy(s => new {s.StudentName,s.studentRegNo}).ToList();
+                    TeacherName = item.Teacher_Subject_Allocation.Teacher.DisplayName,
+                    IsEnable=item.Student.IsEnable,
+                }).GroupBy(s => new {s.StudentName,s.studentRegNo,s.StudentID,s.IsEnable}).ToList();
 
                 var data = result.Select(s => new StudentAllocationGroupByStudentViewModel
                 {
                     StudentName = s.Key.StudentName,
                     StudentRegNo = s.Key.studentRegNo,
+                    StudentID=s.Key.StudentID,
+                    isEnable=s.Key.IsEnable,
                     subjectAllocations = s.GroupBy(x => new { x.TeacherName, x.teacherRegNo })
                         .Select(y => new SubjectAllocationGroupByTeacherViewModel
                          {
@@ -245,7 +269,10 @@ namespace SMS.BL.Allocation
                              }).ToList()
                          }).ToList()
                      });
-
+                if (isActive.HasValue)
+                {
+                    data=data.Where(s=>s.isEnable == isActive.Value);
+                }
                 return data;
             }
             else
@@ -306,6 +333,39 @@ namespace SMS.BL.Allocation
         }
 
         /// <summary>
+        /// Remove the full allocations of that student
+        /// </summary>
+        /// <param name="studentRegNo"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool DeleteAllStudentAllocations(long studentId, out string msg)
+        {
+            msg = "";
+            try
+            {
+                var studentAllocations = Student_Subject_Teacher_Allocation.Where(s => s.StudentID ==studentId ).ToList();
+
+                if (studentAllocations!=null)
+                {
+                    Student_Subject_Teacher_Allocation.RemoveRange(studentAllocations);
+                    SaveChanges();
+                    return true;
+                }
+                msg = "No allocations found for the student.";
+                return false;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                return false;
+            }
+        }
+
+
+
+
+
+        /// <summary>
         /// To check this allocation already exist or not
         /// </summary>
         /// <param name="studentAllocation"></param>
@@ -332,6 +392,11 @@ namespace SMS.BL.Allocation
 
             try
             {
+                if (studentAllocation.SubjectAllocationID == 0)
+                {
+                    msg = "Fill all the fields to create allocation";
+                    return false;
+                }
                 if (CheckDuplicateStudentAllocation(studentAllocation))
                 {
                     msg = "This Allocation already exist!";
@@ -389,7 +454,7 @@ namespace SMS.BL.Allocation
         /// <returns></returns>
         public IEnumerable<object> GetAllocatedTeachers(long id)
         {
-            var teachers = Teacher_Subject_Allocation. Where(t=> t.SubjectID==id).Select(a => new { Value = a.TeacherID, Text = a.Teacher.DisplayName}).ToList();
+            var teachers = Teacher_Subject_Allocation. Where(t=> t.SubjectID==id).Select(a => new { Value = a.SubjectAllocationID, Text = a.Teacher.DisplayName}).ToList();
             return teachers;
 
         }
@@ -404,6 +469,30 @@ namespace SMS.BL.Allocation
         {
             var allocationID=Teacher_Subject_Allocation.Where(s=>s.SubjectID==subjectID && s.TeacherID==teacherID).Select(s=>s.SubjectAllocationID).FirstOrDefault();
             return allocationID;
+        }
+
+
+        public IEnumerable<StudentAllocationGroupByStudentViewModel> GetSearchStudentAllocations(string item, string criteria)
+        {
+            var allCriteria = GetAllStudentAllocation();
+
+            if (criteria == "Student-name")
+            {
+                allCriteria = allCriteria.Where(s => s.StudentName.ToUpper().Contains(item.ToUpper())).ToList();
+            }
+            else if (criteria == "Teacher-name")
+            {
+                allCriteria = allCriteria.Where(s => s.subjectAllocations.Any(t=> t.TeacherName.ToUpper().Contains(item.ToUpper()))).ToList();
+            }
+            else if (criteria == "Subject-name")
+            {
+                allCriteria = allCriteria.Where(s => s.subjectAllocations.Any(t=>t.SubjectAllocations.Any(x=>x.SubjectName.ToUpper().Contains(item.ToUpper())))).ToList();
+            }
+            else
+            {
+                allCriteria = allCriteria.Where(s => s.StudentName.ToUpper().Contains(item.ToUpper()) || s.subjectAllocations.Any(t => t.TeacherName.ToUpper().Contains(item.ToUpper())) || s.subjectAllocations.Any(t => t.SubjectAllocations.Any(x => x.SubjectName.ToUpper().Contains(item.ToUpper())))).ToList();
+            }
+            return allCriteria;
         }
 
 

@@ -14,6 +14,12 @@ namespace SMS.ViewModels.Allocation
         [DisplayName("Student Name")]
         public string StudentName { get; set; }
 
+        public long StudentID { get; set; }
+
+        public bool isEnable {  get; set; }
+
+       
+
         public IEnumerable<SubjectAllocationGroupByTeacherViewModel> subjectAllocations { get; set; }
 
 

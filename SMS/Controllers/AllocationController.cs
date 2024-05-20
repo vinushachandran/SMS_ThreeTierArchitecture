@@ -123,12 +123,29 @@ namespace SMS.Controllers
 
         }
 
+        [HttpGet]
+        public ActionResult SearchSubjectAllocation(string query, string criteria)
+        {
 
-        //For Student allocation
-        public ActionResult AllStudentAllocation()
+            var searchResults = _allocationBL.GetSearchSubjectAllocations(query, criteria).ToList();
+            //return Json(searchResults, JsonRequestBehavior.AllowGet);
+
+            if (searchResults.Count > 0)
+            {
+                return PartialView("_SearchSubjectAllocationResults", searchResults);
+            }
+            else
+            {
+                return PartialView("_SearchSubjectAllocationResults", null);
+            }
+        }
+
+
+        //*********************************************For Student allocation******************************************************
+        public ActionResult AllStudentAllocation(bool? isActive = null)
         {
             var allocatedStudents = new AllocationViewModel();
-            allocatedStudents.StudentAllocations = _allocationBL.GetAllStudentAllocation();
+            allocatedStudents.StudentAllocations = _allocationBL.GetAllStudentAllocation(isActive);
             return PartialView("__AllStudentAllocations", allocatedStudents.StudentAllocations);
 
 
@@ -146,7 +163,11 @@ namespace SMS.Controllers
 
         }
 
-
+        /// <summary>
+        /// remove one allocation of a student
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult DeleteStudentAllocation(long id)
         {
             var msg = "";
@@ -162,6 +183,28 @@ namespace SMS.Controllers
                 return Json(new { success = false, message = msg });
             }
         }
+
+        /// <summary>
+        /// remove all allocations of a student
+        /// </summary>
+        /// <param name="studentRegNo"></param>
+        /// <returns></returns>
+        public ActionResult DeleteAllStudentAllocations(long id)
+        {
+            var msg = "";
+            try
+            {
+                bool isDelete = _allocationBL.DeleteAllStudentAllocations(id, out msg);
+                return Json(new { success = isDelete, message = msg });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
         /// <summary>
         /// Add new allocation or edit existing allocation by id
         /// </summary>
@@ -261,7 +304,22 @@ namespace SMS.Controllers
 
         }
 
+        [HttpGet]
+        public ActionResult SearchStudentAllocation(string query, string criteria)
+        {
 
+            var searchResults = _allocationBL.GetSearchStudentAllocations(query, criteria).ToList();
+            //return Json(searchResults, JsonRequestBehavior.AllowGet);
+
+            if (searchResults.Count > 0)
+            {
+                return PartialView("_SearchStudentAllocationResults", searchResults);
+            }
+            else
+            {
+                return PartialView("_SearchStudentAllocationResults", null);
+            }
+        }
 
     }
 }

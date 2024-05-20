@@ -135,26 +135,42 @@ ul.nav.nav-tabs {
 }
 
 
-.card-container {
+
+
+
+.studentAllocationTableHeader {
+    background-color: #E6E6FA;
+}
+
+.no-border {
+    border: none !important;
+}
+
+.studentAllocationTable th, .studentAllocationTable td {
+    /*border: 1px solid #9F2B68;*/
+    width: 33.33%;
+    text-align: center;
+}
+
+.Teacher-grp {
+    vertical-align: middle !important;
+}
+
+.studentAllocationcardHeader {
+    /*background-color: #f0e6fa;*/
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.card {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: calc(33.333% - 20px);
-    box-sizing: border-box;
-}
-
-.card-header {
-    font-size: 1.25em;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #E6E6FA;
 }
 
 .card-body {
-    padding: 10px 0;
+    background-color: #fcfafe;
+    border-color: #9F2B68;
+}
+
+.delete-allocation {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }

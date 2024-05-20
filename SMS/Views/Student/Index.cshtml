@@ -170,13 +170,13 @@
 
             $('#searchQuery').on('input', function () {
                 var query = $(this).val();
-                var criteria = $('#searchCriteria').val(); // Get selected search criteria
+                var criteria = $('#searchCriteria').val(); 
 
                 if (query.trim() !== '') {
                     $.ajax({
                         url: '/Student/Search',
                         type: 'GET',
-                        data: { query: query, criteria: criteria }, // Include selected criteria in the data
+                        data: { query: query, criteria: criteria }, 
                         success: function (response) {
                             $('#studentDetails').hide();
                             $('#searchResults').html(response).show();
