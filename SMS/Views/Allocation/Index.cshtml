@@ -42,8 +42,8 @@
 
 
 
-                <div class="card no-border mt-5" id="teacherSubjectAllocationTable">
-                    <div class="card-body">
+                <div class="card no-border mt-5 " id="teacherSubjectAllocationTable">
+                    <div class="card-body ">
 
                     </div>
                 </div>
@@ -69,6 +69,8 @@
                         <div>
                             <button id="addNew" class="btn me-3 text-light addNew2">Add New Allocation</button>
                         </div>
+                        <div></div>
+                        <div></div>
                         <div id="enableSelection">
                             <select id="filterCriteria" class="form-select text-dark">
                                 <option value="" selected>All</option>
@@ -78,7 +80,7 @@
                         </div>
                         <div class="search-wrapper" id="hidable-items">
                             <select id="searchCriteria" class="form-select text-dark me-2">
-                                <option value="" selected disabled>All</option>
+                                <option value="" selected>All</option>
                                 <option value="Student-name">Student Name</option>
                                 <option value="Teacher-name">Teacher Name</option>
                                 <option value="Subject-name">Subject Name</option>
@@ -388,39 +390,7 @@
                 success: function (data) {
                     //console.log(data);
                     $("#studentAllocationTableBody").html(data);
-                    //if (data.success) {
-                    //    $('#studentAllocationTableBody').empty();
-
-
-                    //    $.each(data.data, function (index, item) {
-                    //        var row = $('<tr>').appendTo('#studentAllocationTableBody');
-                    //        $('<td>').text(item.studentRegNo).appendTo(row);
-                    //        $('<td>').text(item.StudentName).appendTo(row);
-                    //        $('<td>').text(item.subjectCode).appendTo(row);
-                    //        $('<td>').text(item.SubjectName).appendTo(row);
-                    //        $('<td>').text(item.teacherRegNo).appendTo(row);
-                    //        $('<td>').text(item.TeacherName).appendTo(row);
-
-
-                    //        var actionCell = $('<td>').appendTo(row);
-                    //        var editButton = $('<button>').addClass('btn btn-primary btn-sm').appendTo(actionCell);
-                    //        editButton.append($('<i>').addClass('bi bi-pencil-fill'));
-                    //        editButton.click(function () {
-                    //            editStudentAllocation(item.studentAllocationID);
-                    //        });
-
-                    //        var deleteButton = $('<button>').addClass('btn btn-danger btn-sm').appendTo(actionCell);
-                    //        deleteButton.append($('<i>').addClass('bi bi-trash'));
-                    //        deleteButton.click(function () {
-                    //            deleteStudentAllocation(item.studentAllocationID);
-                    //        });
-
-
-                    //    });
-                    //} else {
-
-                    //    $('#studentAllocationTable').html('<tr><td colspan="4">' + data.message + '</td></tr>');
-                    //}
+                    
                 },
                 error: function () {
 

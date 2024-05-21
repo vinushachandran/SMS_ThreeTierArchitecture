@@ -1,5 +1,11 @@
 ﻿@model IEnumerable<SMS.ViewModels.Allocation.StudentAllocationGroupByStudentViewModel>
 
+<style>
+    .studentAllocationTableHeader {
+        background-color: #E6E6FA;
+        padding: 40px;
+    }
+</style>
 
 @if (Model != null && Model.Any())
 {
@@ -47,7 +53,7 @@
                                         <tr>
                                             @if (isFirstRow)
                                             {
-                                                <td rowspan="@subjectCount" class="align-middle Teacher-grp">@teacher.TeacherName</td>
+                                                <td rowspan="@subjectCount" class="align-middle Teacher-grp">@teacher.TeacherName (@teacher.TeacherRegNo)</td>
                                                 isFirstRow = false;
                                             }
 

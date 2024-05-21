@@ -5,6 +5,8 @@
 
 using SMS.BL;
 using SMS.BL.Teacher;
+using SMS.BL.Teacher.Interface;
+using SMS.Data;
 using SMS.Models.Subject;
 using SMS.Models.Teacher;
 using SMS.ViewModels.Subject;
@@ -19,7 +21,15 @@ namespace SMS.Controllers
 {
     public class TeacherController : Controller
     {
-        private readonly TeacherBL _teacherBL = new TeacherBL();
+        //private readonly TeacherBL _teacherBL = new TeacherBL();
+
+        private readonly ITeacherRepository _teacherRepository;
+
+        public TeacherController()
+        {
+            _teacherRepository=new TeacherRepository(new SMS_DBEntities());
+
+        }
         // GET: Teacher
         public ActionResult Index()
         {
@@ -37,7 +47,7 @@ namespace SMS.Controllers
         public ActionResult All(int pageNumber, int pageSize, bool? isActive = null)
         {
             var allTeacher = new TeacherViewModel();
-            allTeacher.Teachers = _teacherBL.GetAllTeacher(isActive);
+            allTeacher.Teachers = _teacherRepository.GetAllTeacher(isActive);
             List<TeacherBO> pageData;
             int totalPages;
             Pagination(pageNumber, pageSize, allTeacher, out pageData, out totalPages);
@@ -80,7 +90,7 @@ namespace SMS.Controllers
 
             try
             {
-                bool isDelete = _teacherBL.DeleteTeacher(id, out msg);
+                bool isDelete = _teacherRepository.DeleteTeacher(id, out msg);
 
 
                 return Json(new { success = isDelete, message = msg });
@@ -103,7 +113,7 @@ namespace SMS.Controllers
         {
             try
             {
-                bool isToggle = _teacherBL.ToggleEnable(id, enable, out string msg);
+                bool isToggle = _teacherRepository.ToggleEnable(id, enable, out string msg);
 
                 return Json(new { success = isToggle, message = msg });
             }
@@ -129,7 +139,7 @@ namespace SMS.Controllers
             else
             {
 
-                var exsitingTeacher = _teacherBL.GetTeacherByID(id);
+                var exsitingTeacher = _teacherRepository.GetTeacherByID(id);
                 return PartialView("_Add", exsitingTeacher);
             }
 
@@ -149,7 +159,7 @@ namespace SMS.Controllers
             {
                 try
                 {
-                    bool isSaveSuccess = _teacherBL.SaveTeacher(teacher, out msg);
+                    bool isSaveSuccess = _teacherRepository.SaveTeacher(teacher, out msg);
 
                     return Json(new { success = isSaveSuccess, message = msg });
                 }
@@ -175,7 +185,7 @@ namespace SMS.Controllers
         /// <returns></returns>
         public JsonResult IsTeacherRegAvailable(string regNo)
         {
-            bool isAvailable = _teacherBL.CheckTeacherRegNo(regNo);
+            bool isAvailable = _teacherRepository.CheckTeacherRegNo(regNo);
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
         }
 
@@ -187,7 +197,7 @@ namespace SMS.Controllers
 
         public JsonResult IsTeacherNameAvailable(string teacherName)
         {
-            bool isAvailable = _teacherBL.CheckTeacherName(teacherName);
+            bool isAvailable = _teacherRepository.CheckTeacherName(teacherName);
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
         }
 
@@ -198,7 +208,7 @@ namespace SMS.Controllers
         /// <returns></returns>
         public JsonResult IsTeacherEmailAvailable(string teacherEmail)
         {
-            bool isAvailable = _teacherBL.CheckTeacherEmail(teacherEmail);
+            bool isAvailable = _teacherRepository.CheckTeacherEmail(teacherEmail);
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
         }
 
@@ -212,7 +222,7 @@ namespace SMS.Controllers
         public ActionResult Search(string query, string criteria)
         {
 
-            var searchResults = _teacherBL.GetSearchTeachers(query, criteria).ToList();
+            var searchResults = _teacherRepository.GetSearchTeachers(query, criteria).ToList();
 
 
             if (searchResults.Count > 0)

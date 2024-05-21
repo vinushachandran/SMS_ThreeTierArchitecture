@@ -1,16 +1,21 @@
 ﻿using SMS.Data;
 using SMS.Models.Student;
-using SMS.Models.Teacher;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SMS.BL.Student
+namespace SMS.BL.Student.Interface
 {
-    public class StudentBL : SMS_DBEntities
+    public class StudentRepository:IStudentRepository
     {
+        private readonly SMS_DBEntities _dbEntities;
+
+        public StudentRepository(SMS_DBEntities DBEntities)
+        {
+            _dbEntities = DBEntities;
+        }
         /// <summary>
         /// To get all studets details
         /// </summary>
@@ -19,7 +24,7 @@ namespace SMS.BL.Student
 
         public IEnumerable<StudentBO> GetAllStudents(bool? isActive = null)
         {
-            var allStudent = Students.Select(s => new StudentBO()
+            var allStudent = _dbEntities.Students.Select(s => new StudentBO()
             {
                 StudentID = s.StudentID,
                 StudentRegNo = s.StudentRegNo,
@@ -53,7 +58,7 @@ namespace SMS.BL.Student
 
         public StudentBO GetStudentByID(long id)
         {
-            var student = Students.Select(s => new StudentBO()
+            var student = _dbEntities.Students.Select(s => new StudentBO()
             {
                 StudentID = s.StudentID,
                 StudentRegNo = s.StudentRegNo,
@@ -83,34 +88,34 @@ namespace SMS.BL.Student
         {
 
             msg = "";
-            var student = Students.SingleOrDefault(s => s.StudentID == id);
+            var student = _dbEntities.Students.SingleOrDefault(s => s.StudentID == id);
 
             try
             {
 
                 if (student != null)
                 {
-                    bool isStudentUsed = Student_Subject_Teacher_Allocation.Any(s => s.StudentID == student.StudentID);
-                    if (student.IsEnable==true)
+                    bool isStudentUsed = _dbEntities.Student_Subject_Teacher_Allocation.Any(s => s.StudentID == student.StudentID);
+                    if (student.IsEnable == true)
                     {
                         if (isStudentUsed)
                         {
                             msg = "This student " + student.DisplayName + " is allocated for subject.";
                             return false;
                         }
-                        Students.Remove(student);
-                        SaveChanges();
+                        _dbEntities.Students.Remove(student);
+                        _dbEntities.SaveChanges();
                         return true;
 
 
                     }
-                    var studentAllocation = Student_Subject_Teacher_Allocation.Where(s => s.StudentID == id).ToList();
+                    var studentAllocation = _dbEntities.Student_Subject_Teacher_Allocation.Where(s => s.StudentID == id).ToList();
 
-                    Student_Subject_Teacher_Allocation.RemoveRange(studentAllocation);
-                    SaveChanges();
+                    _dbEntities.Student_Subject_Teacher_Allocation.RemoveRange(studentAllocation);
+                    _dbEntities.SaveChanges();
 
-                    Students.Remove(student);
-                    SaveChanges();
+                    _dbEntities.Students.Remove(student);
+                    _dbEntities.SaveChanges();
                     return true;
                 }
                 msg = "Already removed this subject";
@@ -132,7 +137,7 @@ namespace SMS.BL.Student
         public bool CheckStudentName(string studentname)
         {
 
-            bool existingStudentName = Students.Any(s => s.DisplayName == studentname);
+            bool existingStudentName = _dbEntities.Students.Any(s => s.DisplayName == studentname);
             if (existingStudentName)
             {
 
@@ -150,7 +155,7 @@ namespace SMS.BL.Student
         public bool CheckTeacherRegNo(string studentRegNumber)
         {
 
-            bool existingStudentRegNo = Students.Any(s => s.StudentRegNo == studentRegNumber);
+            bool existingStudentRegNo = _dbEntities.Students.Any(s => s.StudentRegNo == studentRegNumber);
             if (existingStudentRegNo)
             {
                 return false;
@@ -166,7 +171,7 @@ namespace SMS.BL.Student
         public bool CheckStudentEmail(string studentEmail)
         {
 
-            bool existingStudentEmail = Students.Any(s => s.Email == studentEmail);
+            bool existingStudentEmail = _dbEntities.Students.Any(s => s.Email == studentEmail);
             if (existingStudentEmail)
             {
                 return false;
@@ -183,7 +188,7 @@ namespace SMS.BL.Student
 
         public bool CheckStudentInUse(long id)
         {
-            bool StudentInUse = Student_Subject_Teacher_Allocation.Any(a => a.StudentID == id);
+            bool StudentInUse = _dbEntities.Student_Subject_Teacher_Allocation.Any(a => a.StudentID == id);
             if (StudentInUse)
             {
                 return true;
@@ -203,20 +208,20 @@ namespace SMS.BL.Student
 
         public bool ToggleEnable(long id, bool isEnable, out string msg)
         {
-            var student = Students.SingleOrDefault(s => s.StudentID == id);
+            var student = _dbEntities.Students.SingleOrDefault(s => s.StudentID == id);
             if (student != null)
             {
                 if (isEnable)
                 {
                     student.IsEnable = true;
-                    SaveChanges();
+                    _dbEntities.SaveChanges();
                     msg = "This student " + student.DisplayName + " successfully enabled! ";
                     return true;
                 }
                 else
                 {
-                    student.IsEnable=false;
-                    SaveChanges() ;
+                    student.IsEnable = false;
+                    _dbEntities.SaveChanges();
                     msg = "this student " + student.DisplayName + " successfully disabled!";
                     return true;
 
@@ -241,13 +246,13 @@ namespace SMS.BL.Student
         {
             msg = "";
 
-            bool existingStudent = Students.Any(s => s.StudentID == student.StudentID);
-            
+            bool existingStudent = _dbEntities.Students.Any(s => s.StudentID == student.StudentID);
+
             bool studentInUse = CheckStudentInUse(student.StudentID);
             bool isStudentRegAvailable = CheckTeacherRegNo(student.StudentRegNo);
             bool isStudentNameAvailable = CheckStudentName(student.DisplayName);
             bool isStudentEmailAvailable = CheckStudentEmail(student.Email);
-            var editStudent = Students.SingleOrDefault(s => s.StudentID == student.StudentID);
+            var editStudent = _dbEntities.Students.SingleOrDefault(s => s.StudentID == student.StudentID);
             try
             {
                 if (existingStudent)
@@ -259,9 +264,9 @@ namespace SMS.BL.Student
                             msg = "The student " + student.DisplayName + " allocated for a subject";
                             return false;
                         }
-                        var allAllocation = Student_Subject_Teacher_Allocation.Where(a => a.StudentID == student.StudentID).ToList();
-                        Student_Subject_Teacher_Allocation.RemoveRange(allAllocation);
-                        SaveChanges();
+                        var allAllocation = _dbEntities.Student_Subject_Teacher_Allocation.Where(a => a.StudentID == student.StudentID).ToList();
+                        _dbEntities.Student_Subject_Teacher_Allocation.RemoveRange(allAllocation);
+                        _dbEntities.SaveChanges();
                         return UpdatedStudentDetails(student, out msg, editStudent);
 
                     }
@@ -273,9 +278,9 @@ namespace SMS.BL.Student
                         return false;
                     }
 
-                    isStudentRegAvailable = Students.Any(s => s.StudentRegNo == student.StudentRegNo && s.StudentID != student.StudentID);
-                    isStudentNameAvailable = Students.Any(s => s.DisplayName == student.DisplayName && s.StudentID != student.StudentID);
-                    isStudentEmailAvailable = Students.Any(s => s.Email == student.Email && s.StudentID != student.StudentID);
+                    isStudentRegAvailable = _dbEntities.Students.Any(s => s.StudentRegNo == student.StudentRegNo && s.StudentID != student.StudentID);
+                    isStudentNameAvailable = _dbEntities.Students.Any(s => s.DisplayName == student.DisplayName && s.StudentID != student.StudentID);
+                    isStudentEmailAvailable = _dbEntities.Students.Any(s => s.Email == student.Email && s.StudentID != student.StudentID);
 
 
                     if (isStudentRegAvailable)
@@ -328,8 +333,8 @@ namespace SMS.BL.Student
                 newStudent.Address = student.Address;
                 newStudent.ContactNo = student.ContactNo;
                 newStudent.IsEnable = student.IsEnable;
-                Students.Add(newStudent);
-                SaveChanges();
+                _dbEntities.Students.Add(newStudent);
+                _dbEntities.SaveChanges();
                 msg = "Student Added Successfully!";
                 return true;
             }
@@ -361,7 +366,7 @@ namespace SMS.BL.Student
             editStudent.Address = student.Address;
             editStudent.ContactNo = student.ContactNo;
             editStudent.IsEnable = student.IsEnable;
-            SaveChanges();
+            _dbEntities.SaveChanges();
             msg = "Student Updated Successfully!";
             return true;
         }
@@ -391,5 +396,9 @@ namespace SMS.BL.Student
             return allCriteria;
         }
 
+        bool IStudentRepository.UpdatedStudentDetails(StudentBO student, out string msg, Data.Student editStudent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

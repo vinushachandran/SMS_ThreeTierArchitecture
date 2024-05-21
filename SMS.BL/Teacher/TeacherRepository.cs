@@ -1,5 +1,5 @@
-﻿using SMS.Data;
-using SMS.Models.Subject;
+﻿using SMS.BL.Teacher.Interface;
+using SMS.Data;
 using SMS.Models.Teacher;
 using System;
 using System.Collections.Generic;
@@ -9,9 +9,14 @@ using System.Threading.Tasks;
 
 namespace SMS.BL.Teacher
 {
-    public class TeacherBL: SMS_DBEntities
+    public class TeacherRepository : ITeacherRepository
     {
+        private readonly SMS_DBEntities _dbEntities;
 
+        public TeacherRepository(SMS_DBEntities dbEntities)
+        {
+            _dbEntities = dbEntities;
+        }
         /// <summary>
         /// To get all the Teacher details
         /// </summary>
@@ -19,19 +24,19 @@ namespace SMS.BL.Teacher
         /// <returns></returns>
         public IEnumerable<TeacherBO> GetAllTeacher(bool? isActive = null)
         {
-            var allTeacher = Teachers.Select(s => new TeacherBO()
+            var allTeacher = _dbEntities.Teachers.Select(s => new TeacherBO()
             {
                 TeacherID = s.TeacherID,
                 TeacherRegNo = s.TeacherRegNo,
                 FirstName = s.FirstName,
-                MiddleName=s.MiddleName,
-                LastName=s.LastName,
-                DisplayName=s.DisplayName,
-                Email=s.Email,
-                Gender=s.Gender,
-                DOB=s.DOB,
-                Address=s.Address,
-                ContactNo=s.ContactNo,
+                MiddleName = s.MiddleName,
+                LastName = s.LastName,
+                DisplayName = s.DisplayName,
+                Email = s.Email,
+                Gender = s.Gender,
+                DOB = s.DOB,
+                Address = s.Address,
+                ContactNo = s.ContactNo,
                 IsEnable = s.IsEnable
 
             });
@@ -53,7 +58,7 @@ namespace SMS.BL.Teacher
 
         public TeacherBO GetTeacherByID(long id)
         {
-            var teacher = Teachers.Select(s => new TeacherBO()
+            var teacher = _dbEntities.Teachers.Select(s => new TeacherBO()
             {
                 TeacherID = s.TeacherID,
                 TeacherRegNo = s.TeacherRegNo,
@@ -82,21 +87,21 @@ namespace SMS.BL.Teacher
         {
 
             msg = "";
-            var teacher = Teachers.SingleOrDefault(s => s.TeacherID == id);
+            var teacher = _dbEntities.Teachers.SingleOrDefault(s => s.TeacherID == id);
 
             try
             {
 
                 if (teacher != null)
                 {
-                    bool isSubjectUsed = Teacher_Subject_Allocation.Any(s => s.TeacherID == teacher.TeacherID);
+                    bool isSubjectUsed = _dbEntities.Teacher_Subject_Allocation.Any(s => s.TeacherID == teacher.TeacherID);
                     if (isSubjectUsed)
                     {
                         msg = "This teacher " + teacher.DisplayName + " is allocated for subject.";
                         return false;
                     }
-                    Teachers.Remove(teacher);
-                    SaveChanges();
+                    _dbEntities.Teachers.Remove(teacher);
+                    _dbEntities.SaveChanges();
                     return true;
                 }
                 msg = "Already removed this teacher";
@@ -117,7 +122,7 @@ namespace SMS.BL.Teacher
         public bool CheckTeacherName(string teacherName)
         {
 
-            bool existingTeacherName = Teachers.Any(s => s.DisplayName == teacherName);
+            bool existingTeacherName = _dbEntities.Teachers.Any(s => s.DisplayName == teacherName);
             if (existingTeacherName)
             {
 
@@ -135,7 +140,7 @@ namespace SMS.BL.Teacher
         public bool CheckTeacherRegNo(string teacherRegNumber)
         {
 
-            bool existingTeacherRegNo = Teachers.Any(s => s.TeacherRegNo == teacherRegNumber);
+            bool existingTeacherRegNo = _dbEntities.Teachers.Any(s => s.TeacherRegNo == teacherRegNumber);
             if (existingTeacherRegNo)
             {
                 return false;
@@ -151,7 +156,7 @@ namespace SMS.BL.Teacher
         public bool CheckTeacherEmail(string teacherEmail)
         {
 
-            bool existingTeacherEmail = Teachers.Any(s => s.Email == teacherEmail);
+            bool existingTeacherEmail = _dbEntities.Teachers.Any(s => s.Email == teacherEmail);
             if (existingTeacherEmail)
             {
                 return false;
@@ -168,7 +173,7 @@ namespace SMS.BL.Teacher
 
         public bool CheckTeacherInUse(long id)
         {
-            bool TeacherInUse = Teacher_Subject_Allocation.Any(a => a.TeacherID == id);
+            bool TeacherInUse = _dbEntities.Teacher_Subject_Allocation.Any(a => a.TeacherID == id);
             if (TeacherInUse)
             {
                 return true;
@@ -186,13 +191,13 @@ namespace SMS.BL.Teacher
 
         public bool ToggleEnable(long id, bool isEnable, out string msg)
         {
-            var teacher = Teachers.SingleOrDefault(s => s.TeacherID == id);
+            var teacher = _dbEntities.Teachers.SingleOrDefault(s => s.TeacherID == id);
             if (teacher != null)
             {
                 if (isEnable)
                 {
                     teacher.IsEnable = true;
-                    SaveChanges();
+                    _dbEntities.SaveChanges();
                     msg = "This teacher " + teacher.DisplayName + " successfully enabled! ";
                     return true;
                 }
@@ -206,7 +211,7 @@ namespace SMS.BL.Teacher
                     else
                     {
                         teacher.IsEnable = false;
-                        SaveChanges();
+                        _dbEntities.SaveChanges();
                         msg = "This teacher " + teacher.DisplayName + " successfully disabled! ";
                         return true;
                     }
@@ -229,12 +234,12 @@ namespace SMS.BL.Teacher
         {
             msg = "";
 
-            bool existingTeacher = Teachers.Any(s => s.TeacherID == teacher.TeacherID);
+            bool existingTeacher = _dbEntities.Teachers.Any(s => s.TeacherID == teacher.TeacherID);
 
             bool teacherInUse = CheckTeacherInUse(teacher.TeacherID);
             bool isTeacherRegAvailable = CheckTeacherRegNo(teacher.TeacherRegNo);
             bool isTeacherNameAvailable = CheckTeacherName(teacher.DisplayName);
-            bool isTeacherEmailAvailable=CheckTeacherEmail(teacher.Email);
+            bool isTeacherEmailAvailable = CheckTeacherEmail(teacher.Email);
             try
             {
                 if (existingTeacher)
@@ -244,7 +249,7 @@ namespace SMS.BL.Teacher
                         msg = "The teacher " + teacher.DisplayName + " allocated for a subject";
                         return false;
                     }
-                    var editTeacher = Teachers.SingleOrDefault(s => s.TeacherID == teacher.TeacherID);
+                    var editTeacher = _dbEntities.Teachers.SingleOrDefault(s => s.TeacherID == teacher.TeacherID);
 
                     if (editTeacher == null)
                     {
@@ -252,9 +257,9 @@ namespace SMS.BL.Teacher
                         return false;
                     }
 
-                    isTeacherRegAvailable = Teachers.Any(s => s.TeacherRegNo == teacher.TeacherRegNo && s.TeacherID != teacher.TeacherID);
-                    isTeacherNameAvailable = Teachers.Any(s => s.DisplayName == teacher.DisplayName && s.TeacherID != teacher.TeacherID);
-                    isTeacherEmailAvailable = Teachers.Any(s => s.Email == teacher.Email && s.TeacherID != teacher.TeacherID);
+                    isTeacherRegAvailable = _dbEntities.Teachers.Any(s => s.TeacherRegNo == teacher.TeacherRegNo && s.TeacherID != teacher.TeacherID);
+                    isTeacherNameAvailable = _dbEntities.Teachers.Any(s => s.DisplayName == teacher.DisplayName && s.TeacherID != teacher.TeacherID);
+                    isTeacherEmailAvailable = _dbEntities.Teachers.Any(s => s.Email == teacher.Email && s.TeacherID != teacher.TeacherID);
 
 
                     if (isTeacherRegAvailable)
@@ -276,9 +281,9 @@ namespace SMS.BL.Teacher
                     }
 
                     editTeacher.TeacherRegNo = teacher.TeacherRegNo;
-                    editTeacher.FirstName=teacher.FirstName;
-                    editTeacher.MiddleName=teacher.MiddleName;
-                    editTeacher.LastName=teacher.LastName;
+                    editTeacher.FirstName = teacher.FirstName;
+                    editTeacher.MiddleName = teacher.MiddleName;
+                    editTeacher.LastName = teacher.LastName;
                     editTeacher.DisplayName = teacher.DisplayName;
                     editTeacher.Email = teacher.Email;
                     editTeacher.Gender = teacher.Gender;
@@ -286,7 +291,7 @@ namespace SMS.BL.Teacher
                     editTeacher.Address = teacher.Address;
                     editTeacher.ContactNo = teacher.ContactNo;
                     editTeacher.IsEnable = teacher.IsEnable;
-                    SaveChanges();
+                    _dbEntities.SaveChanges();
                     msg = "Teacher Updated Successfully!";
                     return true;
 
@@ -320,8 +325,8 @@ namespace SMS.BL.Teacher
                 newTeacher.Address = teacher.Address;
                 newTeacher.ContactNo = teacher.ContactNo;
                 newTeacher.IsEnable = teacher.IsEnable;
-                Teachers.Add(newTeacher);
-                SaveChanges();
+                _dbEntities.Teachers.Add(newTeacher);
+                _dbEntities.SaveChanges();
                 msg = "Teacher Added Successfully!";
                 return true;
             }
@@ -357,7 +362,5 @@ namespace SMS.BL.Teacher
             }
             return allCriteria;
         }
-
-
     }
 }
