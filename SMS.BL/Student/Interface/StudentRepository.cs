@@ -152,7 +152,7 @@ namespace SMS.BL.Student.Interface
         /// <param name="studentRegNumber"></param>
         /// <returns></returns>
 
-        public bool CheckTeacherRegNo(string studentRegNumber)
+        public bool CheckStudentRegNo(string studentRegNumber)
         {
 
             bool existingStudentRegNo = _dbEntities.Students.Any(s => s.StudentRegNo == studentRegNumber);
@@ -249,7 +249,7 @@ namespace SMS.BL.Student.Interface
             bool existingStudent = _dbEntities.Students.Any(s => s.StudentID == student.StudentID);
 
             bool studentInUse = CheckStudentInUse(student.StudentID);
-            bool isStudentRegAvailable = CheckTeacherRegNo(student.StudentRegNo);
+            bool isStudentRegAvailable = CheckStudentRegNo(student.StudentRegNo);
             bool isStudentNameAvailable = CheckStudentName(student.DisplayName);
             bool isStudentEmailAvailable = CheckStudentEmail(student.Email);
             var editStudent = _dbEntities.Students.SingleOrDefault(s => s.StudentID == student.StudentID);

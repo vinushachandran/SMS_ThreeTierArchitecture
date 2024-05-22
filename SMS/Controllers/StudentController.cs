@@ -194,7 +194,7 @@ namespace SMS.Controllers
         /// <returns></returns>
         public JsonResult IsStudentRegAvailable(string regNo)
         {
-            bool isAvailable = _studentRepository.CheckTeacherRegNo(regNo);
+            bool isAvailable = _studentRepository.CheckStudentRegNo(regNo);
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
         }
 
