@@ -35,17 +35,17 @@
                         <td>
                             @if (teacher.IsEnable)
                             {
-                                <button type="button" class="btn btn-success" onclick="toggleEnable('@teacher.TeacherID', false)">Enabled</button>
+                                <button type="button" class="btn btn-success" onclick="toggleEnable('@teacher.TeacherID', false,'@teacher.DisplayName')"><i class="bi bi-toggle-on"></i></button>
 
                             }
                             else
                             {
-                                <button type="button" class="btn btn-danger" onclick="toggleEnable('@teacher.TeacherID', true)">Disabled</button>
+                                <button type="button" class="btn btn-danger" onclick="toggleEnable('@teacher.TeacherID', true,'@teacher.DisplayName')"><i class="bi bi-toggle-off"></i></button>
                             }
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="editSubject('@teacher.TeacherID')"><i class="bi bi-pencil-fill"></i></button>
-                            <button type="button" class="btn btn-danger" onclick="deleteSubject('@teacher.TeacherID')"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-primary" onclick="editTeacher('@teacher.TeacherID')"><i class="bi bi-pencil-fill"></i></button>
+                            <button type="button" class="btn btn-danger" onclick="deleteTeacher('@teacher.TeacherID')"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>
                 }

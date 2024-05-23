@@ -253,6 +253,8 @@
                         $('#subjectDetails').show();
                         $('#hiden-items').show();
                         $('#heading').show();
+                        $('#searchResults').empty().hide();
+                       
                     }
                 });
             } else {
@@ -283,6 +285,8 @@
                         type: 'POST',
                         success: function (response) {
                             if (response.success) {
+                                $('#searchResults').empty().hide();
+                                $('#subjectDetails').show();
                                 $('#tableBody tr[data-id="' + id + '"]').remove();
                                 loadData(currentPage, pageSize);
                                 Swal.fire('Deleted!', 'Record deleted successfully.', 'success');
@@ -347,6 +351,8 @@
                         data: { id: id, enable: enable },
                         success: function (response) {
                             if (response.success) {
+                                $('#searchResults').empty().hide();
+                                $('#subjectDetails').show();
                                 loadData(currentPage, pageSize);
                                 Swal.fire('Success!', response.message, 'success');
                             } else {

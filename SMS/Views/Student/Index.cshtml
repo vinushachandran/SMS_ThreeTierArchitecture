@@ -262,6 +262,8 @@
                         $('#studentDetails').show();
                         $('#hidable_details').show();
                         $('#heading').show();
+                        $('#searchResults').empty().hide();
+                        
                         
                     }
                 });
@@ -284,6 +286,7 @@
                     $('#studentDetails').hide();
                     $('#hidable_details').hide();
                     $('#addStudentForm').show();
+                    $('#searchResults').empty().hide();
                     $('#heading').hide();
                 },
                 error: function (error) {
@@ -310,6 +313,8 @@
                         url: '/Student/Delete/' + id,
                         type: 'POST',
                         success: function (response) {
+                            $('#searchResults').empty().hide();
+                            $('#studentDetails').show();
                             if (response.success) {
                                 $('#tableBody tr:has(td:contains(' + id + '))').remove();
                                 loadData(currentPage, pageSize);
@@ -353,6 +358,9 @@
                         data: { id: id, enable: enable },
                         success: function (response) {
                             if (response.success) {
+                                $('#searchResults').empty().hide();
+                                $('#studentDetails').show();
+                                currentPage === 1;
                                 loadData(currentPage, pageSize);
                                 Swal.fire('Success!', response.message, 'success');
                             } else {

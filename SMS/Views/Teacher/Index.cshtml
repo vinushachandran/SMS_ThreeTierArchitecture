@@ -267,6 +267,8 @@
                         $('#addNew').show();
                         $('#heading').show();
                         $('#hidable_details').show();
+                        $('#searchResults').empty().hide();
+                        
 
                     }
                 });
@@ -320,6 +322,8 @@
                         type: 'POST',
                         success: function (response) {
                             if (response.success) {
+                                $('#searchResults').empty().hide();
+                                $('#teacherDetails').show();
                                 $('#tableBody tr:has(td:contains(' + id + '))').remove();
                                 loadData(currentPage, pageSize);
                                 Swal.fire('Deleted!', 'Record deleted successfully.', 'success');
@@ -369,6 +373,8 @@
                         data: { id: id, enable: enable },
                         success: function (response) {
                             if (response.success) {
+                                $('#searchResults').empty().hide();
+                                $('#teacherDetails').show();
                                 loadData(currentPage, pageSize);
                                 Swal.fire('Success!', response.message, 'success');
                             } else {

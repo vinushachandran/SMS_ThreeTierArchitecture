@@ -19,12 +19,12 @@
                         <td>
                             @if (subject.IsEnable)
                             {
-                                <button type="button" class="btn btn-success" onclick="toggleEnable('@subject.SubjectID', false)">Enabled</button>
+                                <button type="button" class="btn btn-success" onclick="toggleEnable('@subject.SubjectID', false,'@subject.Name')"><i class="bi bi-toggle-on"></i></button>
 
                             }
                             else
                             {
-                                <button type="button" class="btn btn-danger" onclick="toggleEnable('@subject.SubjectID', true)">Disabled</button>
+                                <button type="button" class="btn btn-danger" onclick="toggleEnable('@subject.SubjectID', true,'@subject.Name')"><i class="bi bi-toggle-off"></i></button>
                             }
                         </td>
                         <td>
