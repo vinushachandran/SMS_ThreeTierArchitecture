@@ -1,4 +1,9 @@
-﻿using SMS.BL.Teacher.Interface;
+﻿/// <summary>
+/// This class represents the teacher repository
+/// </summary>
+/// <author>Vinusha</author>
+
+using SMS.BL.Teacher.Interface;
 using SMS.Data;
 using SMS.Models.Teacher;
 using System;
@@ -55,7 +60,6 @@ namespace SMS.BL.Teacher
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-
         public TeacherBO GetTeacherByID(long id)
         {
             var teacher = _dbEntities.Teachers.Select(s => new TeacherBO()
@@ -82,7 +86,6 @@ namespace SMS.BL.Teacher
         /// <param name="id"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-
         public bool DeleteTeacher(long id, out string msg)
         {
 
@@ -136,7 +139,6 @@ namespace SMS.BL.Teacher
         /// </summary>
         /// <param name="TeacherRegNumber"></param>
         /// <returns></returns>
-
         public bool CheckTeacherRegNo(string teacherRegNumber)
         {
 
@@ -170,15 +172,10 @@ namespace SMS.BL.Teacher
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-
         public bool CheckTeacherInUse(long id)
         {
             bool TeacherInUse = _dbEntities.Teacher_Subject_Allocation.Any(a => a.TeacherID == id);
-            if (TeacherInUse)
-            {
-                return true;
-            }
-            return false;
+            return TeacherInUse;
 
         }
         /// <summary>
@@ -188,7 +185,6 @@ namespace SMS.BL.Teacher
         /// <param name="isEnable"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-
         public bool ToggleEnable(long id, bool isEnable, out string msg)
         {
             var teacher = _dbEntities.Teachers.SingleOrDefault(s => s.TeacherID == id);

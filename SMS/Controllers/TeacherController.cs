@@ -1,5 +1,5 @@
 ﻿/// <summary>
-///
+/// This class represents the teacher controller
 /// </summary>
 /// <author>Vinusha</author>
 
@@ -210,6 +210,17 @@ namespace SMS.Controllers
         {
             bool isAvailable = _teacherRepository.CheckTeacherEmail(teacherEmail);
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// To check this teacher is allocated for any subject
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult IsAllocated(long id)
+        {
+            bool isAllocated = _teacherRepository.CheckTeacherInUse(id);
+            return Json(isAllocated, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

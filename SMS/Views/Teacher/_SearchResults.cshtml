@@ -44,8 +44,22 @@
                             }
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="editTeacher('@teacher.TeacherID')"><i class="bi bi-pencil-fill"></i></button>
-                            <button type="button" class="btn btn-danger" onclick="deleteTeacher('@teacher.TeacherID')"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-primary" id="editBtn_@teacher.TeacherID" onclick="editTeacher('@teacher.TeacherID')"><i class="bi bi-pencil-fill"></i></button>
+                            <button type="button" class="btn btn-danger" id="deleteBtn_@teacher.TeacherID" onclick="deleteTeacher('@teacher.TeacherID')"><i class="bi bi-trash"></i></button>
+
+                            <script>
+                                $.ajax({
+                                    url: '/Teacher/IsAllocated',
+                                    data: { id: '@teacher.TeacherID' },
+                                    success: function (response) {
+                                        if (response) {
+                                            $('#editBtn_@teacher.TeacherID,#deleteBtn_@teacher.TeacherID').hide();
+
+                                        }
+
+                                    },
+                                });
+                            </script>
                         </td>
                     </tr>
                 }

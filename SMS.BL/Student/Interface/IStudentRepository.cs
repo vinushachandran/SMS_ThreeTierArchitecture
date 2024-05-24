@@ -1,4 +1,10 @@
-﻿using SMS.Models.Student;
+﻿/// <summary>
+/// This class represents the student interface
+/// </summary>
+/// <author>Vinusha</author>
+
+
+using SMS.Models.Student;
 using System;
 using System.Collections.Generic;
 using System.Linq;

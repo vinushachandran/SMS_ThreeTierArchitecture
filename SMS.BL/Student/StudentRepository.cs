@@ -1,4 +1,9 @@
-﻿using SMS.Data;
+﻿/// <summary>
+/// This class represents the student repository
+/// </summary>
+/// <author>Vinusha</author>
+
+using SMS.Data;
 using SMS.Models.Student;
 using System;
 using System.Collections.Generic;
@@ -83,7 +88,6 @@ namespace SMS.BL.Student.Interface
         /// <param name="id"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-
         public bool DeleteStudent(long id, out string msg)
         {
 
@@ -151,7 +155,6 @@ namespace SMS.BL.Student.Interface
         /// </summary>
         /// <param name="studentRegNumber"></param>
         /// <returns></returns>
-
         public bool CheckStudentRegNo(string studentRegNumber)
         {
 
@@ -161,8 +164,8 @@ namespace SMS.BL.Student.Interface
                 return false;
             }
             return true;
-
         }
+
         /// <summary>
         /// To chek this email address already exist
         /// </summary>
@@ -185,15 +188,10 @@ namespace SMS.BL.Student.Interface
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-
         public bool CheckStudentInUse(long id)
         {
             bool StudentInUse = _dbEntities.Student_Subject_Teacher_Allocation.Any(a => a.StudentID == id);
-            if (StudentInUse)
-            {
-                return true;
-            }
-            return false;
+            return StudentInUse;
 
         }
 
@@ -205,7 +203,6 @@ namespace SMS.BL.Student.Interface
         /// <param name="isEnable"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-
         public bool ToggleEnable(long id, bool isEnable, out string msg)
         {
             var student = _dbEntities.Students.SingleOrDefault(s => s.StudentID == id);
@@ -224,8 +221,6 @@ namespace SMS.BL.Student.Interface
                     _dbEntities.SaveChanges();
                     msg = "this student " + student.DisplayName + " successfully disabled!";
                     return true;
-
-
                 }
             }
             else
@@ -268,7 +263,6 @@ namespace SMS.BL.Student.Interface
                         _dbEntities.Student_Subject_Teacher_Allocation.RemoveRange(allAllocation);
                         _dbEntities.SaveChanges();
                         return UpdatedStudentDetails(student, out msg, editStudent);
-
                     }
 
 

@@ -132,11 +132,6 @@
                 });
             });
 
-
-
-
-            
-
             $('#teacherDetails th').click(function () {
                 var column = $(this).index();
                 sortTable(column);
@@ -147,9 +142,6 @@
             $('#filterCriteria').change(function () {
                 loadData(currentPage, pageSize);
             });
-
-
-            
 
             $('#nextButton').click(function () {
                 currentPage++;
@@ -194,9 +186,6 @@
                 }
             });
 
-
-
-
         });
 
         function loadData(pageNumber, pageSize) {
@@ -219,25 +208,35 @@
                         var enableButton = item.IsEnable ? '<button type="button" class="btn btn-success" onclick="toggleEnable(\'' + item.TeacherID + '\', false,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-on"></i></button>' : '<button type="button" class="btn btn-danger" onclick="toggleEnable(\'' + item.TeacherID + '\', true,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-off"></i></button>';
                         var emaillink = '<a href="mailto:' + item.Email + '">' + item.Email + '</a>';
                         var contactLink = '<a href="tel:' + item.ContactNo + '">' + item.ContactNo + '</a>';
-                        var row = '<tr>' +
-                            '<td>' + item.TeacherRegNo + '</td>' +
-                            '<td>' + item.FirstName + '</td>' +
-                            '<td>' + item.MiddleName + '</td>' +
-                            '<td>' + item.LastName + '</td>' +
-                            '<td>' + item.DisplayName + '</td>' +
-                            '<td>' + emaillink + '</td>' +
-                            '<td>' + item.Gender + '</td>' +
-                            '<td>' + formatDate(item.DOB) + '</td>' +
-                            '<td>' + item.Address + '</td>' +
-                            '<td>' + contactLink + '</td>' +
-                            '<td>' + enableButton + '</td>' +
-                            '<td>' +
+                        var id = item.TeacherID;
 
-                            '<button type="button" class="btn btn-primary" onclick="editTeacher(\'' + item.TeacherID + '\')"><i class="bi bi-pencil-fill"></i> </button> ' +
-                            '<button type="button" class="btn btn-danger" onclick="deleteTeacher(\'' + item.TeacherID + '\')"><i class="bi bi-trash"></i> </button> ' +
-                            '</td>' +
-                            '</tr>';
-                        $('#tableBody').append(row);
+                        isTeacherAllocated(id, function (isAllocated) {
+                            var editButton, deleteButton;
+                            if (!isAllocated) {
+                                editButton = '<button type="button" class="btn btn-primary" onclick="editSubject(\'' + id + '\')"><i class="bi bi-pencil-fill"></i></button> ';
+                                deleteButton = '<button type="button" class="btn btn-danger" onclick="deleteSubject(\'' + id + '\')"><i class="bi bi-trash"></i> </button> ';
+                            } else {
+                                editButton = '';
+                                deleteButton = '';
+                            }
+                            var row = '<tr>' +
+                                '<td>' + item.TeacherRegNo + '</td>' +
+                                '<td>' + item.FirstName + '</td>' +
+                                '<td>' + item.MiddleName + '</td>' +
+                                '<td>' + item.LastName + '</td>' +
+                                '<td>' + item.DisplayName + '</td>' +
+                                '<td>' + emaillink + '</td>' +
+                                '<td>' + item.Gender + '</td>' +
+                                '<td>' + formatDate(item.DOB) + '</td>' +
+                                '<td>' + item.Address + '</td>' +
+                                '<td>' + contactLink + '</td>' +
+                                '<td>' + enableButton + '</td>' +
+                                '<td>' +
+                                editButton + deleteButton +
+                                '</td>' +
+                                '</tr>';
+                            $('#tableBody').append(row);
+                        });
                     });
                     updatePagination(pageNumber, data.totalPages)
 
@@ -245,6 +244,20 @@
                 error: function (error) {
                     console.log(error);
                     Swal.fire('Error!', 'An error occurred while loading data.', 'error');
+                }
+            });
+        }
+
+        function isTeacherAllocated(id, callback) {
+            $.ajax({
+                url: '/Teacher/IsAllocated',
+                data: { id: id },
+                success: function (response) {
+                    callback(response);
+                },
+                error: function (error) {
+                    console.log("Error checking allocation:", error);
+                    callback(false);
                 }
             });
         }
@@ -413,10 +426,6 @@
                 $('#nextButton').addClass('disabled');
             }
         }
-
-
-
-
 
     </script>
 }

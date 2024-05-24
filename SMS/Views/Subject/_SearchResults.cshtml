@@ -28,10 +28,31 @@
                             }
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="editSubject('@subject.SubjectID')"><i class="bi bi-pencil-fill"></i></button>
-                            <button type="button" class="btn btn-danger" onclick="deleteSubject('@subject.SubjectID')"><i class="bi bi-trash"></i></button>
+
+
+                            <button type="button" class="btn btn-primary" id="editBtn_@subject.SubjectID" onclick="editSubject('@subject.SubjectID')"><i class="bi bi-pencil-fill"></i></button>
+                            <button type="button" class="btn btn-danger" id="deleteBtn_@subject.SubjectID" onclick="deleteSubject('@subject.SubjectID')"><i class="bi bi-trash"></i></button>
+
+                            <script>
+                                $.ajax({
+                                    url: '/Subject/IsAllocated',
+                                    data: { id: '@subject.SubjectID' },
+                                    success: function (response) {
+                                        if (response) {
+                                            $('#editBtn_@subject.SubjectID,#deleteBtn_@subject.SubjectID').hide();
+
+                                        }
+                                        
+                                    },                                  
+                                });
+
+
+                            </script>
+
                         </td>
                     </tr>
+                    
+
                 }
             </tbody>
         </table>
@@ -41,5 +62,7 @@ else
 {
     <p>No results found.</p>
 }
+
+
 
 

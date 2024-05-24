@@ -1,6 +1,4 @@
 ﻿@model IEnumerable<SMS.ViewModels.Allocation.SubjectAllocationGroupByTeacherViewModel>
-   
-
 
 <div class="container ">
     @if (Model != null && Model.Any())
@@ -22,8 +20,21 @@
                                         <p class="mb-0"><strong>@subject.SubjectName</strong> (@subject.SubjectCode)</p>
                                     </div>
                                     <div class="ms-3">
-                                        <button type="button" class="btn btn-sm btn-primary" onclick="editTeacherSubjectAllocation(@subject.SubjectAllocationID)"><i class="bi bi-pencil-fill"></i></button>
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteTeacherSubjectAllocation(@subject.SubjectAllocationID)"><i class="bi bi-trash"></i></button>
+                                        <button type="button" class="btn btn-sm btn-primary" id="editBtn_@subject.SubjectAllocationID" onclick="editTeacherSubjectAllocation(@subject.SubjectAllocationID)"><i class="bi bi-pencil-fill"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger" id="deleteBtn_@subject.SubjectAllocationID" onclick="deleteTeacherSubjectAllocation(@subject.SubjectAllocationID)"><i class="bi bi-trash"></i></button>
+                                        <script>
+                                            $.ajax({
+                                                url: '/Allocation/IsAllocated',
+                                                data: { id: '@subject.SubjectAllocationID' },
+                                                success: function (response) {
+                                                    if (response) {
+                                                        $('#editBtn_@subject.SubjectAllocationID,#deleteBtn_@subject.SubjectAllocationID').hide();
+
+                                                    }
+
+                                                },
+                                            });
+                                        </script>
                                     </div>
                                 </div>
                             }

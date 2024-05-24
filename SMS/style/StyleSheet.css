@@ -177,3 +177,32 @@ ul.nav.nav-tabs {
 .subject-card{
     
 }
+
+
+.studentAllocationInsideTable th, .studentAllocationInsideTable td {
+    border: 1px solid #dee2e6;
+    width: 33.33%;
+    text-align: center;
+}
+
+.StudentAllocationTeacherColumn {
+    vertical-align: middle !important;
+}
+
+.studentAllocationcardHeader {
+    background-color: #f0e6fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.studentAllocationcardCard {
+    background-color: #fcfafe;
+    border-color: #9F2B68;
+}
+
+.delete-allocation {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}

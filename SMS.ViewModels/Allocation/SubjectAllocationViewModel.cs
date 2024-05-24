@@ -12,13 +12,11 @@ namespace SMS.ViewModels.Allocation
         
         public long SubjectAllocationID { get; set; }
 
-        public long SubjectID { get; set;}
         [DisplayName("Subject Code")]
         public  string SubjectCode {  get; set; }
+
         [DisplayName("Subject Name")]
         public string SubjectName { get; set; }
-
-        public long TeacherID {  get; set; }
 
         public long StudentAllocationID { get; set; }
 

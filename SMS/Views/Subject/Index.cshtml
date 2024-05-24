@@ -76,32 +76,16 @@
                         </ul>
                     </nav>
                 </div>
-
-
             </div>
         </div>
     </div>
 
-
-
-
     <div id="searchResults"></div>
 
 
-    <div id="addSubjectForm" class="p-4 mx-auto Customform" , style="max-width: 600px;display:none;">
-
-
-    </div>
-
-
-
-
+    <div id="addSubjectForm" class="p-4 mx-auto Customform" , style="max-width: 600px;display:none;"></div>
+    
 </div>
-
-
-
-
-
 
 
 
@@ -117,10 +101,6 @@
 
             //load intial data
             loadData(currentPage, pageSize);
-
-
-            
-
 
             $('#addNew').click(function () {
                 $('#subjectDetails').hide();
@@ -138,22 +118,18 @@
             });
 
 
-           
-
-
             $('#searchQuery').on('input', function () {
                 var query = $(this).val();
-                var criteria = $('#searchCriteria').val(); // Get selected search criteria
+                var criteria = $('#searchCriteria').val(); 
 
                 if (query.trim() !== '') {
                     $.ajax({
                         url: '/Subject/Search',
                         type: 'GET',
-                        data: { query: query, criteria: criteria }, // Include selected criteria in the data
+                        data: { query: query, criteria: criteria },
                         success: function (response) {
                             $('#subjectDetails').hide();
                             $('#searchResults').html(response).show();
-                           
                         },
                         error: function (error) {
                             console.log(error);
@@ -161,7 +137,7 @@
                         }
                     });
                 } else {
-                    $('#subjectDetails').show(); // Show table body
+                    $('#subjectDetails').show();
                     $('#searchResults').empty().hide();
                     
                 }
@@ -199,40 +175,61 @@
 
         });
 
-
-
-
-
-
         function loadData(pageNumber, pageSize) {
             var filterCriteria = $('#filterCriteria').val();
             $.ajax({
                 url: '/Subject/All',
                 type: 'Get',
-                data: { pageNumber: currentPage, pageSize: pageSize, isActive: filterCriteria },
+                data: { pageNumber: pageNumber, pageSize: pageSize, isActive: filterCriteria },
                 success: function (data) {
                     $('#tableBody').empty();
                     $.each(data.data, function (index, item) {
-                        var editUrl = '/Subject/Edit/' + item.SubjectID;
-                        var deleteUrl = '/Subject/Delete/' + item.SubjectID;
-                        var enableButton = item.IsEnable ? '<button type="button" class="btn btn-success" onclick="toggleEnable(\'' + item.SubjectID + '\', false,\'' + item.Name + '\')"><i class="bi bi-toggle-on"></i></button>' : '<button type="button" class="btn btn-danger" onclick="toggleEnable(\'' + item.SubjectID + '\', true,\'' + item.Name + '\')"><i class="bi bi-toggle-off"></i></button>';
-                        var row = '<tr>' +
-                            '<td>' + item.SubjectCode + '</td>' +
-                            '<td>' + item.Name + '</td>' +
-                            '<td>' + enableButton + '</td>' +
-                            '<td>' +
-                            '<button type="button" class="btn btn-primary" onclick="editSubject(\'' + item.SubjectID + '\')"><i class="bi bi-pencil-fill"></i></button> ' +
-                            '<button type="button" class="btn btn-danger" onclick="deleteSubject(\'' + item.SubjectID + '\')"><i class="bi bi-trash"></i> </button> ' +
-                            '</td>' +
-                            '</tr>';
-                        $('#tableBody').append(row);
-                    });
-                    updatePagination(pageNumber, data.totalPages)
+                        var id = item.SubjectID;
+                        var editUrl = '/Subject/Edit/' + id;
+                        var deleteUrl = '/Subject/Delete/' + id;
+                        var enableButton = item.IsEnable ? '<button type="button" class="btn btn-success" onclick="toggleEnable(\'' + id + '\', false,\'' + item.Name + '\')"><i class="bi bi-toggle-on"></i></button>' : '<button type="button" class="btn btn-danger" onclick="toggleEnable(\'' + id + '\', true,\'' + item.Name + '\')"><i class="bi bi-toggle-off"></i></button>';
 
+                        isSubjectAllocated(id, function (isAllocated) {
+                            var editButton, deleteButton;
+                            if (!isAllocated) {
+                                editButton = '<button type="button" class="btn btn-primary" onclick="editSubject(\'' + id + '\')"><i class="bi bi-pencil-fill"></i></button> ';
+                                deleteButton = '<button type="button" class="btn btn-danger" onclick="deleteSubject(\'' + id + '\')"><i class="bi bi-trash"></i> </button> ';
+                            } else {
+                                editButton = '';
+                                deleteButton = '';
+                            }
+
+                            var row = '<tr>' +
+                                '<td>' + item.SubjectCode + '</td>' +
+                                '<td>' + item.Name + '</td>' +
+                                '<td>' + enableButton + '</td>' +
+                                '<td>' +
+                                editButton + deleteButton +
+                                '</td>' +
+                                '</tr>';
+                            $('#tableBody').append(row);
+                        });
+                    });
+                    updatePagination(pageNumber, data.totalPages);
                 },
                 error: function (error) {
                     console.log(error);
                     Swal.fire('Error!', 'An error occurred while loading data.', 'error');
+                }
+            });
+        }
+
+
+        function isSubjectAllocated(id, callback) {
+            $.ajax({
+                url: '/Subject/IsAllocated',
+                data: { id: id },
+                success: function (response) {
+                    callback(response);
+                },
+                error: function (error) {
+                    console.log("Error checking allocation:", error);
+                    callback(false); // Assuming false indicates allocation not found
                 }
             });
         }
@@ -304,11 +301,6 @@
         }
 
 
-
-
-     
-
-
         // Edit subject function
         function editSubject(id) {
             $.ajax({
@@ -375,21 +367,21 @@
             $('#subjectDetails').show();
             $('#hiden-items').show();
             $('#heading').show();
-           
-
         }
 
 
         //For sorting columns
-
+        var sortASC = true;
         function sortTable(column) {
             var tableRows = $('#subjectDetails tbody tr').get();
             tableRows.sort(function (a, b) {
                 var valA = $(a).find('td').eq(column).text().toUpperCase();
                 var valB = $(b).find('td').eq(column).text().toUpperCase();
-                return valA.localeCompare(valB);
+                var sorting = valA.localeCompare(valB);
+                return sortASC ? sorting : -sorting;
             });
             $('#tableBody').empty().append(tableRows);
+            sortASC=!sortASC;
 
         }
 
@@ -403,10 +395,6 @@
                 $('#nextButton').addClass('disabled');
             }
         }
-
-
-
-
 
     </script>
 }

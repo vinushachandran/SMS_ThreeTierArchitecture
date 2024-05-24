@@ -1,5 +1,5 @@
 ﻿/// <summary>
-///
+/// This class represents the student controller
 /// </summary>
 /// <author>Vinusha</author>
 
@@ -221,6 +221,16 @@ namespace SMS.Controllers
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// To check this student is allocated for any subject
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult IsAllocated(long id)
+        {
+            bool isAllocated = _studentRepository.CheckStudentInUse(id);
+            return Json(isAllocated, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// To access the seach bar

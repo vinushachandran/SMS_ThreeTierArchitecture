@@ -1,4 +1,9 @@
-﻿using SMS.BL.Subject.Interface;
+﻿/// <summary>
+/// This class represents the subject repository
+/// </summary>
+/// <author>Vinusha</author>
+
+using SMS.BL.Subject.Interface;
 using SMS.Data;
 using SMS.Models.Subject;
 using System;
@@ -27,11 +32,7 @@ namespace SMS.BL.Subject
         public bool CheckSubjectCode(string subjectCode)
         {
             bool existingSubjectCode =_dbEntities.Subjects.Any(s => s.SubjectCode == subjectCode);
-            if (existingSubjectCode)
-            {
-                return false;
-            }
-            return true;
+            return existingSubjectCode;
         }
 
         /// <summary>
@@ -41,12 +42,8 @@ namespace SMS.BL.Subject
         /// <returns></returns>
         public bool CheckSubjectInUse(long id)
         {
-            bool SubjectInUse = _dbEntities.Teacher_Subject_Allocation.Any(a => a.SubjectID == id);
-            if (SubjectInUse)
-            {
-                return true;
-            }
-            return false;
+            bool SubjectInUse = _dbEntities.Teacher_Subject_Allocation.Any(a => a.SubjectID == id);           
+            return SubjectInUse;
         }
 
         /// <summary>
@@ -57,12 +54,7 @@ namespace SMS.BL.Subject
         public bool CheckSubjectName(string subjectName)
         {
             bool existingSubjectName =_dbEntities.Subjects.Any(s => s.Name == subjectName);
-            if (existingSubjectName)
-            {
-
-                return false;
-            }
-            return true;
+            return existingSubjectName;
         }
 
         /// <summary>
@@ -151,6 +143,11 @@ namespace SMS.BL.Subject
             return allCriteria;
         }
 
+        /// <summary>
+        /// Get the one subject details by it's id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public SubjectBO GetSubjetByID(long id)
         {
             var subject = _dbEntities.Subjects.Select(s => new SubjectBO()
@@ -163,6 +160,12 @@ namespace SMS.BL.Subject
             return subject;
         }
 
+        /// <summary>
+        /// To save or edit the subject details
+        /// </summary>
+        /// <param name="subject"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         public bool SaveSubject(SubjectBO subject, out string msg)
         {
             msg = "";
@@ -240,6 +243,13 @@ namespace SMS.BL.Subject
             }
         }
 
+        /// <summary>
+        /// To handle enable desable button
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="isEnable"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         public bool ToggleEnable(long id, bool isEnable, out string msg)
         {
             var subject = _dbEntities.Subjects.SingleOrDefault(s => s.SubjectID == id);

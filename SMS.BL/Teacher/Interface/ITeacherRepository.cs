@@ -1,4 +1,10 @@
-﻿using SMS.Models.Teacher;
+﻿/// <summary>
+/// This class represents the teacher interface
+/// </summary>
+/// <author>Vinusha</author>
+
+
+using SMS.Models.Teacher;
 using System;
 using System.Collections.Generic;
 using System.Linq;

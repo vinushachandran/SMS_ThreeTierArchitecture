@@ -21,12 +21,6 @@ namespace SMS.Models.Subject
         [DisplayName("Active Status")]
         public bool IsEnable { get; set; }
 
-        public string DisplayIsEnabled
-        {
-            get
-            {
-                return (IsEnable) ? "yes" : "no";
-            }
-        }
+        
     }
 }

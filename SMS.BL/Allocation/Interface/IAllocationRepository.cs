@@ -1,4 +1,9 @@
-﻿using SMS.Models.Allocation;
+﻿/// <summary>
+/// This class represents the student allocation and subject allocation interface
+/// </summary>
+/// <author>Vinusha</author>
+
+using SMS.Models.Allocation;
 using SMS.ViewModels.Allocation;
 using System;
 using System.Collections.Generic;

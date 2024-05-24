@@ -1,40 +1,10 @@
 ﻿@model IEnumerable<SMS.ViewModels.Allocation.StudentAllocationGroupByStudentViewModel>
 
-<style>
-    .table-bordered th, .table-bordered td {
-        border: 1px solid #dee2e6;
-        width: 33.33%;
-        text-align: center;
-    }
-
-    .align-middle {
-        vertical-align: middle !important;
-    }
-
-    .studentAllocationcardHeader {
-        background-color: #f0e6fa;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .card-body {
-        background-color: #fcfafe;
-        border-color: #9F2B68;
-    }
-
-    .delete-allocation {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
-</style>
-
 @if (Model != null && Model.Any())
 {
     foreach (var student in Model)
     {
-        <div class="card mb-3 card-body">
+        <div class="card mb-3 card-body studentAllocationcardCard">
             <div class="card-header studentAllocationcardHeader">
                 <div>
                     <strong>Student - </strong>@student.StudentName  (@student.StudentRegNo)
@@ -57,7 +27,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered studentAllocationInsideTable">
                             <thead>
                                 <tr class="studentAllocationTableHeader">
                                     <th>Teacher</th>
@@ -76,7 +46,7 @@
                                         <tr>
                                             @if (isFirstRow)
                                             {
-                                                <td rowspan="@subjectCount" class="align-middle">@teacher.TeacherName</td>
+                                                <td rowspan="@subjectCount" class="align-middle StudentAllocationTeacherColumn">@teacher.TeacherName</td>
                                                 isFirstRow = false;
                                             }
 

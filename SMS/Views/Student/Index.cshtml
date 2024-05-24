@@ -117,11 +117,6 @@
                 }
             });
 
-
-
-
-
-
             $('#addNew').click(function () {
                 $('#studentDetails').hide();
                 $('#hidable_details').hide();
@@ -188,7 +183,7 @@
                         }
                     });
                 } else {
-                    $('#studentDetails').show(); // Show table body
+                    $('#studentDetails').show();
                     $('#searchResults').empty().hide();
 
                 }
@@ -216,25 +211,36 @@
                         var enableButton = item.IsEnable ? '<button type="button" class="btn btn-success" onclick="toggleEnable(\'' + item.StudentID + '\', false,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-on"></i></button>' : '<button type="button" class="btn btn-danger" onclick="toggleEnable(\'' + item.StudentID + '\', true,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-off"></i></button>';
                         var emaillink = '<a href="mailto:' + item.Email + '">' + item.Email + '</a>';
                         var contactLink = '<a href="tel:' + item.ContactNo + '">' + item.ContactNo + '</a>';
-                        var row = '<tr>' +
-                            '<td>' + item.StudentRegNo + '</td>' +
-                            '<td>' + item.FirstName + '</td>' +
-                            '<td>' + item.MiddleName + '</td>' +
-                            '<td>' + item.LastName + '</td>' +
-                            '<td>' + item.DisplayName + '</td>' +
-                            '<td>' + emaillink + '</td>' +
-                            '<td>' + item.Gender + '</td>' +
-                            '<td>' + formatDate(item.DOB) + '</td>' +
-                            '<td>' + item.Address + '</td>' +
-                            '<td>' + contactLink + '</td>' +
-                            '<td>' + enableButton + '</td>' +
-                            '<td>' +
+                        var id = item.StudentID;
 
-                            '<button type="button" class="btn btn-primary" onclick="editStudent(\'' + item.StudentID + '\')"><i class="bi bi-pencil-fill"></i> </button> ' +
-                            '<button type="button" class="btn btn-danger" onclick="deleteStudent(\'' + item.StudentID + '\')"><i class="bi bi-trash"></i> </button> ' +
-                            '</td>' +
-                            '</tr>';
-                        $('#tableBody').append(row);
+                        isStudentAllocated(id, function (isAllocated) {
+                            var editButton, deleteButton;
+                            if (!isAllocated) {
+                                editButton = '<button type="button" class="btn btn-primary" onclick="editSubject(\'' + id + '\')"><i class="bi bi-pencil-fill"></i></button> ';
+                                deleteButton = '<button type="button" class="btn btn-danger" onclick="deleteSubject(\'' + id + '\')"><i class="bi bi-trash"></i> </button> ';
+                            } else {
+                                editButton = '';
+                                deleteButton = '';
+                            }
+                            var row = '<tr>' +
+                                '<td>' + item.StudentRegNo + '</td>' +
+                                '<td>' + item.FirstName + '</td>' +
+                                '<td>' + item.MiddleName + '</td>' +
+                                '<td>' + item.LastName + '</td>' +
+                                '<td>' + item.DisplayName + '</td>' +
+                                '<td>' + emaillink + '</td>' +
+                                '<td>' + item.Gender + '</td>' +
+                                '<td>' + formatDate(item.DOB) + '</td>' +
+                                '<td>' + item.Address + '</td>' +
+                                '<td>' + contactLink + '</td>' +
+                                '<td>' + enableButton + '</td>' +
+                                '<td>' +
+                                editButton + deleteButton +
+
+                                '</td>' +
+                                '</tr>';
+                            $('#tableBody').append(row);
+                        });
                     });
                     updatePagination(pageNumber, data.totalPages)
 
@@ -242,6 +248,20 @@
                 error: function (error) {
                     console.log(error);
                     Swal.fire('Error!', 'An error occurred while loading data.', 'error');
+                }
+            });
+        }
+
+        function isStudentAllocated(id, callback) {
+            $.ajax({
+                url: '/Student/IsAllocated',
+                data: { id: id },
+                success: function (response) {
+                    callback(response);
+                },
+                error: function (error) {
+                    console.log("Error checking allocation:", error);
+                    callback(false); 
                 }
             });
         }

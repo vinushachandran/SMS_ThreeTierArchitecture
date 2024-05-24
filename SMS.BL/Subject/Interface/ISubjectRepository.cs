@@ -1,4 +1,10 @@
-﻿using SMS.Models.Subject;
+﻿/// <summary>
+/// This class represents the subject interface
+/// </summary>
+/// <author>Vinusha</author>
+
+
+using SMS.Models.Subject;
 using System;
 using System.Collections.Generic;
 using System.Linq;

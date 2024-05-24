@@ -1,4 +1,8 @@
-﻿using SMS.BL;
+﻿/// <summary>
+/// This class represents the subject allocation and student allocation controller
+/// </summary>
+/// <author>Vinusha</author>
+using SMS.BL;
 using SMS.BL.Allocation;
 using SMS.BL.Student;
 using SMS.BL.Subject.Interface;
@@ -145,6 +149,12 @@ namespace SMS.Controllers
 
         }
 
+        /// <summary>
+        /// For searching Subject allocation
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult SearchSubjectAllocation(string query, string criteria)
         {
@@ -160,6 +170,17 @@ namespace SMS.Controllers
             {
                 return PartialView("_SearchSubjectAllocationResults", null);
             }
+        }
+
+        /// <summary>
+        /// To check this subject allocation allocated for any student
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult IsAllocated(long id)
+        {
+            bool isAllocated = _allocationRepository.CheckSubjectAllocationInUse(id);
+            return Json(isAllocated, JsonRequestBehavior.AllowGet);
         }
 
 

@@ -1,5 +1,5 @@
 ﻿/// <summary>
-///
+/// This class represents the subject controller
 /// </summary>
 /// <author>Vinusha</author>
 
@@ -174,6 +174,17 @@ namespace SMS.Controllers
             //bool isAvailable = _subjectBL.CheckSubjectName(subName);
             bool isAvailable = _subjectRepository.CheckSubjectName(subName);
             return Json(isAvailable, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// To check this subject is allocated for any teacher
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult IsAllocated(long id)
+        {
+            bool isAllocated=_subjectRepository.CheckSubjectInUse(id);
+            return Json(isAllocated, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

@@ -1,4 +1,9 @@
-﻿using SMS.BL.Allocation.Interface;
+﻿/// <summary>
+/// This class represents the subject allocation and student allocation  repository
+/// </summary>
+/// <author>Vinusha</author>
+
+using SMS.BL.Allocation.Interface;
 using SMS.Data;
 using SMS.Models.Allocation;
 using SMS.ViewModels.Allocation;
@@ -205,7 +210,12 @@ namespace SMS.BL.Allocation
 
         }
 
-
+        /// <summary>
+        /// To get the serach result of the subject allocation
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         public IEnumerable<SubjectAllocationGroupByTeacherViewModel> GetSearchSubjectAllocations(string item, string criteria)
         {
             var allCriteria = GetAllSubjectAllocation();
@@ -373,9 +383,6 @@ namespace SMS.BL.Allocation
         }
 
 
-
-
-
         /// <summary>
         /// To check this allocation already exist or not
         /// </summary>
@@ -387,20 +394,17 @@ namespace SMS.BL.Allocation
             return isDuplicateAllocation;
         }
 
+
         /// <summary>
         /// add a new student allocation or edit already exist allocation
         /// </summary>
         /// <param name="studentAllocation"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-
         public bool SaveStudentAllocation(StudentAllocationBO studentAllocation, out string msg)
         {
             msg = "";
-
             bool exitingStudentAllocation = _dbEntities.Student_Subject_Teacher_Allocation.Any(s => s.StudentAllocationID == studentAllocation.StudentAllocationID);
-
-
             try
             {
                 if (studentAllocation.SubjectAllocationID == 0)
@@ -427,7 +431,6 @@ namespace SMS.BL.Allocation
                     _dbEntities.SaveChanges();
                     msg = "Student Allocation Updated Successfully!";
                     return true;
-
                 }
 
                 var newStudentAllocation = new Student_Subject_Teacher_Allocation();
