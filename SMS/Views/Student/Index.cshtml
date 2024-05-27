@@ -62,6 +62,9 @@
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
+                <div class="alert alert-warning" id="notFound" role="alert">
+                    No data found.
+                </div>
                 <div class="container-fluid">
                     <nav aria-label="Page navigation">
                         <ul class="pagination pagination-container">
@@ -91,6 +94,8 @@
     </div>
 
     <div id="searchResults"></div>
+
+    
 
 </div>
 
@@ -204,45 +209,55 @@
                 type: 'GET',
                 data: { pageNumber: currentPage, pageSize: pageSize, isActive: filterCriteria },
                 success: function (data) {
-                    $('#tableBody').empty();
-                    $.each(data.data, function (index, item) {
-                        var editUrl = '/Student/Edit/' + item.StudentID;
-                        var deleteUrl = '/Student/Delete/' + item.StudentID;
-                        var enableButton = item.IsEnable ? '<button type="button" class="btn btn-success" onclick="toggleEnable(\'' + item.StudentID + '\', false,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-on"></i></button>' : '<button type="button" class="btn btn-danger" onclick="toggleEnable(\'' + item.StudentID + '\', true,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-off"></i></button>';
-                        var emaillink = '<a href="mailto:' + item.Email + '">' + item.Email + '</a>';
-                        var contactLink = '<a href="tel:' + item.ContactNo + '">' + item.ContactNo + '</a>';
-                        var id = item.StudentID;
+                    if (data.success) {
+                        $('#tableBody').empty();
+                        $('#notFound').hide();
+                        $.each(data.data, function (index, item) {
+                            var editUrl = '/Student/Edit/' + item.StudentID;
+                            var deleteUrl = '/Student/Delete/' + item.StudentID;
+                            var enableButton = item.IsEnable ? '<button type="button" class="btn btn-success" onclick="toggleEnable(\'' + item.StudentID + '\', false,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-on"></i></button>' : '<button type="button" class="btn btn-danger" onclick="toggleEnable(\'' + item.StudentID + '\', true,\'' + item.DisplayName + '\')"><i class="bi bi-toggle-off"></i></button>';
+                            var emaillink = '<a href="mailto:' + item.Email + '">' + item.Email + '</a>';
+                            var contactLink = '<a href="tel:' + item.ContactNo + '">' + item.ContactNo + '</a>';
+                            var id = item.StudentID;
 
-                        isStudentAllocated(id, function (isAllocated) {
-                            var editButton, deleteButton;
-                            if (!isAllocated) {
-                                editButton = '<button type="button" class="btn btn-primary" onclick="editSubject(\'' + id + '\')"><i class="bi bi-pencil-fill"></i></button> ';
-                                deleteButton = '<button type="button" class="btn btn-danger" onclick="deleteSubject(\'' + id + '\')"><i class="bi bi-trash"></i> </button> ';
-                            } else {
-                                editButton = '';
-                                deleteButton = '';
-                            }
-                            var row = '<tr>' +
-                                '<td>' + item.StudentRegNo + '</td>' +
-                                '<td>' + item.FirstName + '</td>' +
-                                '<td>' + item.MiddleName + '</td>' +
-                                '<td>' + item.LastName + '</td>' +
-                                '<td>' + item.DisplayName + '</td>' +
-                                '<td>' + emaillink + '</td>' +
-                                '<td>' + item.Gender + '</td>' +
-                                '<td>' + formatDate(item.DOB) + '</td>' +
-                                '<td>' + item.Address + '</td>' +
-                                '<td>' + contactLink + '</td>' +
-                                '<td>' + enableButton + '</td>' +
-                                '<td>' +
-                                editButton + deleteButton +
+                            isStudentAllocated(id, function (isAllocated) {
+                                var editButton, deleteButton;
+                                if (!isAllocated) {
+                                    editButton = '<button type="button" class="btn btn-primary" onclick="editSubject(\'' + id + '\')"><i class="bi bi-pencil-fill"></i></button> ';
+                                    deleteButton = '<button type="button" class="btn btn-danger" onclick="deleteSubject(\'' + id + '\')"><i class="bi bi-trash"></i> </button> ';
+                                } else {
+                                    editButton = '';
+                                    deleteButton = '';
+                                }
+                                var row = '<tr>' +
+                                    '<td>' + item.StudentRegNo + '</td>' +
+                                    '<td>' + item.FirstName + '</td>' +
+                                    '<td>' + item.MiddleName + '</td>' +
+                                    '<td>' + item.LastName + '</td>' +
+                                    '<td>' + item.DisplayName + '</td>' +
+                                    '<td>' + emaillink + '</td>' +
+                                    '<td>' + item.Gender + '</td>' +
+                                    '<td>' + formatDate(item.DOB) + '</td>' +
+                                    '<td>' + item.Address + '</td>' +
+                                    '<td>' + contactLink + '</td>' +
+                                    '<td>' + enableButton + '</td>' +
+                                    '<td>' +
+                                    editButton + deleteButton +
 
-                                '</td>' +
-                                '</tr>';
-                            $('#tableBody').append(row);
+                                    '</td>' +
+                                    '</tr>';
+                                $('#tableBody').append(row);
+                            });
                         });
-                    });
-                    updatePagination(pageNumber, data.totalPages)
+                        updatePagination(pageNumber, data.totalPages)
+
+                    }
+                    else {
+                        $('#tableBody').empty();
+                        console.log('No data found');
+                        $('#notFound').show();
+                    }
+                   
 
                 },
                 error: function (error) {
